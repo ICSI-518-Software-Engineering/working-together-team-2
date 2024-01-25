@@ -13,11 +13,6 @@ function subtract(a, b) {
   // return a - b;
 }
 
-// Addition
-function add(a, b) {
-  // return a + b;
-}
-
 // Division
 function divide(a, b) {
   if (b !== 0) {
