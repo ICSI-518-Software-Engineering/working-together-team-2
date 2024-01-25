@@ -1,25 +1,25 @@
+// Multiplication
+function multiply(a, b) {
+  // return a * b;
+}
+
 // Addition
 function add(a, b) {
-    // return a + b;
+  // return a + b;
 }
 
 // Subtraction
 function subtract(a, b) {
-    // return a - b;
-}
-
-// Multiplication
-function multiply(a, b) {
-    // return a * b;
+  // return a - b;
 }
 
 // Division
 function divide(a, b) {
-    if (b !== 0) {
-        // return a / b;
-    } else {
-        return "Cannot divide by zero";
-    }
+  if (b !== 0) {
+    // return a / b;
+  } else {
+    return "Cannot divide by zero";
+  }
 }
 
 // Examples
@@ -35,4 +35,3 @@ console.log("Result of subtraction:", resultSubtraction);
 console.log("Result of multiplication:", resultMultiplication);
 console.log("Result of division:", resultDivision);
 console.log("Result of division by zero:", resultDivisionByZero);
-  
