@@ -10,7 +10,7 @@ function add(a, b) {
 
 // Subtraction
 function subtract(a, b) {
-    // return a - b;
+    return a - b;
 }
 
 // Division
