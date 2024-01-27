@@ -30,11 +30,11 @@ Giridhar
 Vignesh
 Yogitha
 Blue :
-Brain 
+Brian 
 Manikumar
 Bhoomika
 ### Teams for Activity 2 & 3 : 
-Add :  Brain
+Add :  Brian
 Sub : Yogitha , Giridhar
 Mul : Manikumar , Bhoomika
 Div : Vignesh
