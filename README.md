@@ -22,3 +22,19 @@ git checkout <branch_name>
 
 ### Pull changes from git
 git pull origin main/master/<branch_name>
+
+### Teams 
+### Teams for Activity 1 : 
+Red :
+Giridhar 
+Vignesh
+Yogitha
+Blue :
+Brian 
+Manikumar
+Bhoomika
+### Teams for Activity 2 & 3 : 
+Add :  Brian
+Sub : Yogitha , Giridhar
+Mul : Manikumar , Bhoomika
+Div : Vignesh
