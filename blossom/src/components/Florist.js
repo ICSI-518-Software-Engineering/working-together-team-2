@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Florist = () => {
+export const This is Florist entry point = () => {
   return (
     <div>This is Florist entry point</div>
   )
