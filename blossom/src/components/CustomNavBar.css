@@ -1,0 +1,7 @@
+.navbar-nav {
+    justify-content: space-between !important;
+  }
+  .navbar.navbar-expand-lg.bg-body-tertiary {
+    background-color: beige !important;
+  }
+    
