@@ -23,8 +23,12 @@ function VendorLoginForm() {
     try {
       const response = await axios.post('/api/auth/login', formData);
       console.log('Login successful:', response.data);
-      // Redirect to dashboard after successful login with the vendor's name
-      window.location.href = `/dashboard`;
+
+      // Assuming response.data.userId exists
+      const userId = response.data.userId;
+
+      // Redirect to dashboard after successful login with the userId
+      window.location.href = `/dashboard/${userId}`;
     } catch (error) {
       console.error('Login failed:', error);
       // Handle login failure, e.g., display error message

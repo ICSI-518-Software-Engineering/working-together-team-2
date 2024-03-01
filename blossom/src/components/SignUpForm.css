@@ -1,0 +1,84 @@
+/* SignUpForm.css */
+
+/* Container */
+.container {
+    padding-top: 50px;
+    /* Add space between navbar and form */
+}
+
+/* Card */
+.card {
+    border: none;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Form */
+.form-control {
+    border-radius: 20px;
+    border: 1px solid #ced4da;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Form Label */
+.form-label {
+    font-weight: bold;
+}
+
+/* Checkbox */
+.form-check-label {
+    font-weight: normal;
+}
+
+/* Button */
+.btn {
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+/* Sign Up Button */
+.btn-primary {
+    background-color: #ffc0cb;
+    /* Light pink */
+    border-color: #ffc0cb;
+    color: #333;
+}
+
+.btn-primary:hover {
+    background-color: #ff91a4;
+    /* Lighter pink on hover */
+    border-color: #ff91a4;
+}
+
+/* Link */
+.link {
+    color: #007bff;
+    /* Blue */
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #0056b3;
+    /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+.signup-background {
+    background-image: url('../content/assets/bg1.jpg');
+    background-size: 100% 100vh;
+    /* Cover entire viewport height and adjust width */
+    background-position: center;
+}
+
+.signup-card {
+    background-color: #d4176f;
+    /* Light grey background */
+}

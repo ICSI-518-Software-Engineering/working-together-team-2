@@ -1,7 +1,48 @@
-.navbar-nav {
-    justify-content: space-between !important;
-  }
-  .navbar.navbar-expand-lg.bg-body-tertiary {
-    background-color: beige !important;
-  }
-    
+/* CustomNavBar.css */
+.custom-navbar.navbar {
+  background-color: #ffd6e8;
+  /* Light pink background */
+  color: #333;
+  /* Dark text color */
+  padding-top: 0.25rem;
+  /* Adjusted top padding */
+  padding-bottom: 0.25rem;
+  /* Adjusted bottom padding */
+  margin-bottom: 0;
+  /* Ensures no bottom margin */
+}
+
+.custom-navbar .navbar-brand {
+  font-size: 20px;
+  /* Slightly reduced font size */
+}
+
+.custom-navbar .navbar-nav {
+  margin-left: auto;
+  /* Push nav links to the right */
+}
+
+.custom-navbar .navbar-nav .nav-link {
+  font-size: 16px;
+  /* Slightly reduced font size */
+  margin-left: 10px;
+  /* Slightly reduced spacing between links */
+}
+
+.custom-navbar .navbar-toggle {
+  padding: 0.25rem;
+  /* Reduced padding for the toggle button */
+}
+
+/* Optional: If you want to make navbar links smaller */
+.custom-navbar .nav-item {
+  padding: 0.25rem 0.5rem;
+  /* Reduced vertical padding and slightly increased horizontal padding */
+}
+
+/* This will ensure that the navbar is flush with the top of the page */
+body,
+html {
+  margin-top: 0;
+  padding-top: 0;
+}
