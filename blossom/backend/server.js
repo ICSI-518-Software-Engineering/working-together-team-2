@@ -24,6 +24,8 @@ db.once('open', () => {
 // Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+const ordersRoutes = require('./routes/orders');
+app.use('/api/orders', ordersRoutes); // Corrected route definition
 
 // Start the server
 app.listen(port, () => {
