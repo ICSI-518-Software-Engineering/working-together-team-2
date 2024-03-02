@@ -26,6 +26,9 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 const ordersRoutes = require('./routes/orders');
 app.use('/api/orders', ordersRoutes); // Corrected route definition
+//create order
+const createOrderRoutes = require('./routes/createOrder');
+app.use('/api/createOrder', createOrderRoutes);
 
 // Start the server
 app.listen(port, () => {
