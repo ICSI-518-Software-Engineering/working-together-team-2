@@ -16,6 +16,7 @@ const HomePage: React.FC = () => {
       bgcolor="transparent"
       height="calc(100vh - 10rem)"
       elevation={24}
+      borderRadius="1rem"
     >
       <Box
         display="flex"
