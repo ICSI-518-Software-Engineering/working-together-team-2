@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes";
 
@@ -8,7 +9,9 @@ const App = () => {
       <Navbar />
 
       {/* Main Content Pages */}
-      <AppRoutes />
+      <Box p="2rem" height="100%" width="100%">
+        <AppRoutes />
+      </Box>
     </main>
   );
 };
