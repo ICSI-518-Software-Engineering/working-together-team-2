@@ -1,18 +1,25 @@
 import { TextField, TextFieldProps } from "@mui/material";
-import React from "react";
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-type InputProps = {
-  control: Control;
-} & Omit<TextFieldProps, "id"> &
-  Required<Pick<TextFieldProps, "id">>;
+type InputProps<T extends FieldValues> = {
+  control: Control<T>;
+} & Omit<TextFieldProps, "id"> & {
+    id: Path<T>;
+  };
 
-const Input: React.FC<InputProps> = ({ control, ...props }) => {
+const Input = <T extends FieldValues>({ control, ...props }: InputProps<T>) => {
   return (
     <Controller
       name={props.id}
       control={control}
-      render={({ field }) => <TextField {...field} {...props} />}
+      render={({ field, fieldState }) => (
+        <TextField
+          {...field}
+          {...props}
+          error={Boolean(fieldState.error)}
+          helperText={fieldState.error?.message}
+        />
+      )}
     />
   );
 };
