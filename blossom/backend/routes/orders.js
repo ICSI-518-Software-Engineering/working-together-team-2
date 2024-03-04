@@ -27,4 +27,24 @@ router.get('/', (req, res) => { // Corrected route definition
     res.json(mockData);
 });
 
+// GET /orders/:vendorId/:orderId
+router.get('/:vendorId/:orderId', async (req, res) => {
+    try {
+        const { vendorId, orderId } = req.params;
+
+        // Find order by vendorId and orderId
+        const order = await Order.findOne({ vendorId, orderId });
+
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        res.json(order);
+    } catch (error) {
+        console.error('Error retrieving order:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
+
