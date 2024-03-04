@@ -5,19 +5,21 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AuthLayout from "../AuthLayout";
-import { SignInSchemaType, signInZodSchema } from "../typesAndData";
+import {
+  SignInSchemaType,
+  SignUpSchemaType,
+  signUpZodSchema,
+} from "../typesAndData";
 
-type SignInPageProps = {
-  vendor?: boolean;
-};
-
-const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
-  const { control, handleSubmit } = useForm<SignInSchemaType>({
+const SignUpPage: React.FC = () => {
+  const { control, handleSubmit } = useForm<SignUpSchemaType>({
     defaultValues: {
       email: "",
       password: "",
+      name: "",
+      confirmPassword: "",
     },
-    resolver: zodResolver(signInZodSchema),
+    resolver: zodResolver(signUpZodSchema),
   });
 
   const handleLogin = (data: SignInSchemaType) => {
@@ -26,9 +28,16 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
 
   return (
     <AuthLayout
-      pageTitle={`${vendor ? "Vendor" : "Customer"} Sign In`}
+      pageTitle="Customer Sign Up"
       submitHandler={handleSubmit(handleLogin)}
     >
+      <Input
+        label="Name"
+        control={control}
+        id="name"
+        variant="standard"
+        required
+      />
       <Input
         label="Email"
         control={control}
@@ -44,22 +53,28 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
         type="password"
         required
       />
+      <Input
+        label="Confirm Password"
+        control={control}
+        id="confirmPassword"
+        variant="standard"
+        type="password"
+        required
+      />
       <Button type="submit" variant="contained" size="large" color="secondary">
-        Login
+        Register
       </Button>
 
-      {!vendor && (
-        <Typography
-          textAlign="center"
-          component={Link}
-          to="/customer/sign-up"
-          mt="0.5rem"
-        >
-          Don't have an account?
-        </Typography>
-      )}
+      <Typography
+        textAlign="center"
+        component={Link}
+        to="/customer"
+        mt="0.5rem"
+      >
+        Already have an account?
+      </Typography>
     </AuthLayout>
   );
 };
 
-export default SignInPage;
+export default SignUpPage;

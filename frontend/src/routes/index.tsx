@@ -1,7 +1,8 @@
 import SignInPage from "@/pages/Auth/Sign-In";
+import SignUpPage from "@/pages/Auth/Sign-Up";
 import HomePage from "@/pages/Home";
 import React from "react";
-import { useRoutes } from "react-router-dom";
+import { Outlet, useRoutes } from "react-router-dom";
 
 const AppRoutes: React.FC = () => {
   const routes = useRoutes([
@@ -11,11 +12,31 @@ const AppRoutes: React.FC = () => {
     },
     {
       path: "/customer",
-      element: <SignInPage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SignInPage />,
+        },
+        {
+          path: "sign-up",
+          element: <SignUpPage />,
+        },
+      ],
     },
     {
       path: "/vendor",
-      element: <SignInPage />,
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <SignInPage vendor />,
+        },
+        // {
+        //   path: "sign-up",
+        //   element: <SignUpPage vendor />,
+        // },
+      ],
     },
   ]);
 
