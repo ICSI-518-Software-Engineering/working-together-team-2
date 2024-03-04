@@ -34,10 +34,13 @@ const Navbar: React.FC = () => {
         <ButtonGroup variant="outlined">
           {navLinks.map((navlink) => (
             <Button
+              key={navlink.url}
               component={NavLink}
               to={navlink.url}
               color="secondary"
-              variant={navlink.url === pathname ? "contained" : "outlined"}
+              variant={
+                pathname?.startsWith(navlink.url) ? "contained" : "outlined"
+              }
             >
               {navlink.label}
             </Button>
