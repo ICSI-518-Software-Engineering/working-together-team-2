@@ -1,26 +1,33 @@
 import { Box, Paper, Typography } from "@mui/material";
-import React from "react";
+import React, { FormEvent } from "react";
 
 type AuthLayoutProps = {
   pageTitle: string;
   children: React.ReactNode;
+  submitHandler: (e: FormEvent) => unknown;
 };
 
-const AuthLayout: React.FC<AuthLayoutProps> = ({ children, pageTitle }) => {
+const AuthLayout: React.FC<AuthLayoutProps> = ({
+  children,
+  pageTitle,
+  submitHandler,
+}) => {
   return (
     <Box
       display="flex"
-      height="80vh"
+      height="calc(100vh - 20rem)"
       width="100%"
       alignItems="center"
       justifyContent="center"
+      component="form"
+      onSubmit={submitHandler}
     >
       <Box
         component={Paper}
         p="2rem"
         display="flex"
         flexDirection="column"
-        gap="1.5rem"
+        gap="2rem"
         borderRadius="1rem"
         width="40rem"
       >
