@@ -1,5 +1,16 @@
+import Navbar from "./components/Navbar";
+import AppRoutes from "./routes";
+
 const App = () => {
-  return <div>Manikumar</div>;
+  return (
+    <main>
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Main Content Pages */}
+      <AppRoutes />
+    </main>
+  );
 };
 
 export default App;
