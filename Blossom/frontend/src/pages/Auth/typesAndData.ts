@@ -30,6 +30,7 @@ export const signUpZodSchema = z
         }
       ),
     confirmPassword: z.string(),
+    isVendor: z.boolean().optional(),
   })
   .refine(({ confirmPassword, password }) => password === confirmPassword, {
     message: "Mismatch in password",
@@ -37,3 +38,13 @@ export const signUpZodSchema = z
   });
 
 export type SignUpSchemaType = z.infer<typeof signUpZodSchema>;
+
+/**
+ * Signed In User Session Type
+ */
+export type UserSessionType = {
+  _id: string;
+  name: string;
+  email: string;
+  isVendor: boolean;
+};
