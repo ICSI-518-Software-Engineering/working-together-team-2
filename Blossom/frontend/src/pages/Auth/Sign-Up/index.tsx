@@ -1,18 +1,23 @@
+import { useSignUpService } from "@/api/authServices";
 import Input from "@/components/Input";
+import { signInUser } from "@/utils/authUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Typography } from "@mui/material";
-import React from "react";
+import { Button, CircularProgress, Typography } from "@mui/material";
+import { AxiosError } from "axios";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AuthLayout from "../AuthLayout";
-import {
-  SignInSchemaType,
-  SignUpSchemaType,
-  signUpZodSchema,
-} from "../typesAndData";
+import { SignUpSchemaType, signUpZodSchema } from "../typesAndData";
 
-const SignUpPage: React.FC = () => {
-  const { control, handleSubmit } = useForm<SignUpSchemaType>({
+type SignUpPageProps = {
+  vendor?: boolean;
+};
+
+const SignUpPage: React.FC<SignUpPageProps> = ({ vendor }) => {
+  const { mutate, isPending } = useSignUpService();
+
+  const { control, handleSubmit, setError } = useForm<SignUpSchemaType>({
     defaultValues: {
       email: "",
       password: "",
@@ -22,14 +27,27 @@ const SignUpPage: React.FC = () => {
     resolver: zodResolver(signUpZodSchema),
   });
 
-  const handleLogin = (data: SignInSchemaType) => {
-    console.log(data);
-  };
+  const handleSignUp = useCallback(
+    (data: SignUpSchemaType, isVendor = false) => {
+      mutate(
+        { ...data, isVendor },
+        {
+          onSuccess: (d) => signInUser(d),
+          onError: (e) => {
+            if (e instanceof AxiosError) {
+              setError("email", { message: e?.response?.data });
+            }
+          },
+        }
+      );
+    },
+    [mutate, setError]
+  );
 
   return (
     <AuthLayout
-      pageTitle="Customer Sign Up"
-      submitHandler={handleSubmit(handleLogin)}
+      pageTitle={`${vendor ? "Vendor" : "Customer"} Sign Up`}
+      submitHandler={handleSubmit((d) => handleSignUp(d, vendor))}
     >
       <Input
         label="Name"
@@ -61,14 +79,23 @@ const SignUpPage: React.FC = () => {
         type="password"
         required
       />
-      <Button type="submit" variant="contained" size="large" color="secondary">
+      <Button
+        type="submit"
+        variant="contained"
+        size="large"
+        color="secondary"
+        disabled={isPending}
+        endIcon={
+          isPending && <CircularProgress size="1rem" color="secondary" />
+        }
+      >
         Register
       </Button>
 
       <Typography
         textAlign="center"
         component={Link}
-        to="/customer"
+        to={vendor ? "/auth/vendor" : "/auth/customer"}
         mt="0.5rem"
       >
         Already have an account?
