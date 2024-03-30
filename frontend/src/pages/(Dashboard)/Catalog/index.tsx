@@ -9,6 +9,7 @@ import CustomDialog from "@/components/CustomDialog";
 import DataGrid from "@/components/DataGrid";
 import Dropdown from "@/components/Dropdown";
 import Input from "@/components/Input";
+import { useImageCompressor } from "@/lib/hooks/useImageCompressor";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Delete, Edit } from "@mui/icons-material";
 import {
@@ -41,12 +42,15 @@ const DashboardCatalogPage: React.FC = () => {
     useDeleteCatalogService();
   const { mutate: createProduct, isPending: isCreationInProgress } =
     useCreateCatalogService();
+  const { isLoading: isCompressionInProgress, compressImage } =
+    useImageCompressor();
 
   const isLoading =
     isUpdateInProgress || isDeleteInProgress || isCreationInProgress;
 
   const [selectedItem, setSelectedItem] =
     useState<Partial<CatalogItemDataType> | null>(null);
+  const [image, setImage] = useState<string>();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -58,6 +62,7 @@ const DashboardCatalogPage: React.FC = () => {
 
   const handleClose = useCallback(() => {
     setSelectedItem(null);
+    setImage(undefined);
     setIsOpen(false);
   }, []);
 
@@ -123,6 +128,7 @@ const DashboardCatalogPage: React.FC = () => {
             onClick={() => {
               reset(item);
               setSelectedItem(item);
+              setImage(item.image);
               setIsOpen(true);
             }}
           >
@@ -190,7 +196,7 @@ const DashboardCatalogPage: React.FC = () => {
 
       {/* Modal */}
       <CustomDialog
-        isOpen={isOpen}
+        open={isOpen}
         onClose={handleClose}
         title={selectedItem ? "Edit Product" : "Add Product"}
       >
@@ -199,11 +205,9 @@ const DashboardCatalogPage: React.FC = () => {
           gap="2rem"
           component="form"
           onSubmit={handleSubmit((d) =>
-            onSubmit(
-              { ...d, image: selectedItem?.image },
-              Boolean(selectedItem)
-            )
+            onSubmit({ ...d, image: image }, Boolean(selectedItem))
           )}
+          p="1rem"
         >
           {/* Left Container */}
           <Stack gap="0.5rem">
@@ -213,32 +217,41 @@ const DashboardCatalogPage: React.FC = () => {
               height="18rem"
               width="18rem"
             >
-              <Box
-                component="img"
-                src={selectedItem?.image || "/image_placeholder.jpg"}
-                alt={selectedItem?.name}
-                width="100%"
-                height="100%"
-                p="0.5rem"
-                borderRadius="0.75rem"
-              />
+              {isCompressionInProgress ? (
+                <Stack
+                  alignItems="center"
+                  justifyContent="center"
+                  height="100%"
+                >
+                  <CircularProgress size="2rem" />
+                </Stack>
+              ) : (
+                <Box
+                  component="img"
+                  src={image || "/image_placeholder.jpg"}
+                  alt="Product Image"
+                  width="100%"
+                  height="100%"
+                  p="0.5rem"
+                  borderRadius="0.75rem"
+                />
+              )}
             </Box>
             <TextField
               type="file"
               placeholder="Upload Image"
               helperText="Upload Image"
+              disabled={isCompressionInProgress}
               onChange={async ({
                 target,
               }: React.ChangeEvent<HTMLInputElement>) => {
                 const file = target.files?.[0];
                 if (!file) {
-                  return setSelectedItem((prev) => ({
-                    ...prev,
-                    image: undefined,
-                  }));
+                  return setImage(undefined);
                 }
-                const image = await fileToBase64(file);
-                setSelectedItem((prev) => ({ ...prev, image: image }));
+                const compressedFile = await compressImage(file);
+                const imageURL = await fileToBase64(compressedFile);
+                setImage(imageURL);
               }}
             />
           </Stack>
@@ -274,6 +287,7 @@ const DashboardCatalogPage: React.FC = () => {
               label="Type"
               options={catalogProductTypeOptions}
               variant="outlined"
+              size="small"
             />
             <ComboBox
               control={control}
@@ -283,6 +297,7 @@ const DashboardCatalogPage: React.FC = () => {
               multiple
               freeSolo
               onChange={(_, v) => setValue("tags", v)}
+              size="small"
             />
             <Input
               control={control}
