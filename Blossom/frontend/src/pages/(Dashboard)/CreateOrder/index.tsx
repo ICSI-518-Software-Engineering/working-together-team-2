@@ -60,9 +60,10 @@ const DashboardCreateOrderPage: React.FC = () => {
             flexDirection="column"
             gap="2rem"
             minWidth="60%"
+            overflow={{ xs: "initial", lg: "auto" }}
           >
             {/* Customer Details */}
-            <Stack gap="1rem">
+            <Stack gap="2rem">
               <Typography fontWeight="bold">Customer Details</Typography>
 
               {/* Customer Details */}
@@ -172,6 +173,20 @@ const DashboardCreateOrderPage: React.FC = () => {
                     fullWidth
                   />
                 </Stack>
+              </Stack>
+            )}
+
+            {deliveryType === deliveryTypeOptions[0].value && (
+              <Stack gap="2rem">
+                <Typography fontWeight="bold">Pickup Details</Typography>
+                {/* Pickup date */}
+                <CustomDatePicker
+                  control={control}
+                  id="deliveryDate"
+                  textFieldProps={{ size: "small" }}
+                  minDate={today()}
+                  label="Pickup Date"
+                />
               </Stack>
             )}
           </Box>

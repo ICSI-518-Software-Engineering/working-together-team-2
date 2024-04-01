@@ -1,4 +1,5 @@
 import { LabelValueType } from "@/lib/constants";
+import { Dayjs } from "dayjs";
 import { z } from "zod";
 
 export const productTypeOptions: LabelValueType[] = [
@@ -28,7 +29,10 @@ export const createOrderZodSchema = z.object({
   email: z.string().email().min(1, { message: "Email is required" }),
   phone: z.string().min(1, { message: "Phone is required" }),
   deliveryType: z.string().min(1, { message: "Delivery type is required" }),
-  deliveryDate: z.union([z.date(), z.string()]).optional(),
+  deliveryDate: z
+    .any()
+    .optional()
+    .transform((item: Dayjs) => (item ? item.toDate() : "")),
   address: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
