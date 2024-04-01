@@ -100,15 +100,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                 </div>
             </div>
             <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center', // Align content to center horizontally
-                marginTop: '0px',
-                padding: '0px',
-                height: '650px',
-                backgroundColor: '#e7feff',
-                borderRadius: '0px',
-                width: '100%', // Set width to 100% to fit the screen
+                // Set width to 100% to fit the screen
             }}>
                 <div style={{
                     flex: 1,
