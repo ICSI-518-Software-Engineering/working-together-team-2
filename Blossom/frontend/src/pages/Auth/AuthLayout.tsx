@@ -15,7 +15,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   return (
     <Box
       display="flex"
-      height="calc(100vh - 20rem)"
+      height="80vh"
       width="100%"
       alignItems="center"
       justifyContent="center"
