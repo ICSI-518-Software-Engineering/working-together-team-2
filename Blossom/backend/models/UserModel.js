@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import mongoose, { Schema } from "mongoose";
 import z from "zod";
 
-const UserSchema = new Schema({
+export const UserMongooseSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -66,7 +66,7 @@ export const signInZodSchema = z.object({
 });
 
 // To save password in encrypted form before saving to database
-UserSchema.pre("save", async function (next) {
+UserMongooseSchema.pre("save", async function (next) {
   try {
     this.password = await bcrypt.hash(this.password, 10);
     return next();
@@ -76,7 +76,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 // To generate auth token
-UserSchema.methods.generateJWTToken = function () {
+UserMongooseSchema.methods.generateJWTToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -89,11 +89,11 @@ UserSchema.methods.generateJWTToken = function () {
 };
 
 // To validate auth token
-UserSchema.methods.comparePassword = function (password) {
+UserMongooseSchema.methods.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-const UserModel = mongoose.model("user", UserSchema);
+const UserModel = mongoose.model("user", UserMongooseSchema);
 
 export const validateSignUpRequest = (data) => {
   return signUpZodSchema.parse(data);

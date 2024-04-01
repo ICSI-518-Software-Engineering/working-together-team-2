@@ -14,7 +14,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <SideNav />
 
       {/* Content */}
-      <Box ml={Constants.DRAWER_WIDTH}>{children}</Box>
+      <Box
+        ml={Constants.DRAWER_WIDTH}
+        p="0.6rem 1rem"
+        maxHeight={({ mixins }) => `calc(100vh - ${mixins.toolbar.height})`}
+        overflow="auto"
+      >
+        {children}
+      </Box>
     </Box>
   );
 };
