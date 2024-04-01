@@ -4,11 +4,14 @@ export const theme = createTheme({
   palette: {
     mode: "dark",
     secondary: {
-      main: "#ffffff",
+      main: "#fff",
     },
-    background: {
-      paper: "black",
-      default: "black",
+    // background: {
+    //   paper: "black",
+    //   default: "black",
+    // },
+    text: {
+      primary: "#fff",
     },
   },
   mixins: {

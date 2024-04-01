@@ -30,7 +30,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
         gap="2rem"
         borderRadius="1rem"
         width="40rem"
-        elevation={5}
       >
         <Typography variant="h5" textAlign="center" fontWeight={600} mb="2rem">
           {pageTitle}

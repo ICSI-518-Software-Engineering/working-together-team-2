@@ -88,7 +88,7 @@ const NavLinks: React.FC = () => {
             to={navlink.url}
             color="secondary"
             variant={
-              pathname?.startsWith("/vendor/") ? "contained" : "outlined"
+              pathname?.startsWith(navlink.url) ? "contained" : "outlined"
             }
           >
             {navlink.label}
