@@ -24,11 +24,10 @@ export const deliveryTypeOptions: LabelValueType[] = [
 ];
 
 export const createOrderZodSchema = z.object({
-  name: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  productType: z.string(),
-  deliveryType: z.string(),
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email().min(1, { message: "Email is required" }),
+  phone: z.string().min(1, { message: "Phone is required" }),
+  deliveryType: z.string().min(1, { message: "Delivery type is required" }),
   deliveryDate: z.union([z.date(), z.string()]).optional(),
   address: z.string().optional(),
   city: z.string().optional(),

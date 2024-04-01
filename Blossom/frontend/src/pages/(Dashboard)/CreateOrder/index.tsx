@@ -3,146 +3,215 @@ import Input from "@/components/Input";
 import Radio from "@/components/Radio";
 import { today } from "@/utils/dateUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import DashboardLayout from "..";
+import AddProductsDialog from "./AddProductsDialog";
+import CartSection from "./CartSection";
+import ConfirmOrderDialog from "./ConfirmOrderDialog";
+import useProductsStore, { calculateTotalPrice } from "./productsStore";
 import {
   CreateOrderFormDataType,
   createOrderZodSchema,
   deliveryTypeOptions,
-  productTypeOptions,
 } from "./typesAndData";
 
 const DashboardCreateOrderPage: React.FC = () => {
-  const { control, watch } = useForm<CreateOrderFormDataType>({
+  const { cart } = useProductsStore();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] =
+    useState<boolean>(false);
+  const { control, watch, handleSubmit } = useForm<CreateOrderFormDataType>({
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-      productType: "",
       deliveryType: "",
       deliveryDate: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
     },
     resolver: zodResolver(createOrderZodSchema),
   });
 
   const deliveryType = watch("deliveryType");
 
+  const handleCreateOrder = (data: CreateOrderFormDataType) => {
+    console.log(data, cart, calculateTotalPrice(cart));
+  };
+
   return (
     <DashboardLayout>
       <Box
-        component={Paper}
-        p="1.5rem"
-        display="flex"
-        flexDirection="column"
-        gap="2rem"
+        component="form"
+        onSubmit={handleSubmit(handleCreateOrder)}
+        ref={formRef}
       >
-        {/* Customer Details */}
-        <Stack gap="1rem">
-          <Typography fontWeight="bold">Customer Details</Typography>
-          <Stack direction="row" gap="1rem">
-            <Input
+        <Stack direction={{ xs: "column", md: "row" }} height="88vh" gap="1rem">
+          {/* Left Layout */}
+          <Box
+            component={Paper}
+            p="1.5rem"
+            display="flex"
+            flexDirection="column"
+            gap="2rem"
+            minWidth="60%"
+          >
+            {/* Customer Details */}
+            <Stack gap="1rem">
+              <Typography fontWeight="bold">Customer Details</Typography>
+
+              {/* Customer Details */}
+              <Stack direction="row" gap="1rem">
+                <Input
+                  control={control}
+                  id="name"
+                  label="Customer Name"
+                  placeholder="Enter customer name"
+                  fullWidth
+                  size="small"
+                  required
+                />
+                <Input
+                  control={control}
+                  id="email"
+                  label="Customer Email"
+                  placeholder="Enter customer email"
+                  fullWidth
+                  size="small"
+                  required
+                />
+                <Input
+                  control={control}
+                  id="phone"
+                  label="Customer phone number"
+                  placeholder="Enter customer phone number"
+                  fullWidth
+                  size="small"
+                  required
+                  type="number"
+                />
+              </Stack>
+            </Stack>
+
+            {/* Product Type */}
+            <Divider />
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setIsOpen(true)}
+            >
+              Add Products
+            </Button>
+            <Divider />
+
+            {/* Delivery Type */}
+            <Radio
+              id="deliveryType"
+              options={deliveryTypeOptions}
               control={control}
-              id="name"
-              label="Customer Name"
-              placeholder="Enter customer name"
-              fullWidth
-              size="small"
+              label="Delivery Type"
+              row
+              required
             />
-            <Input
-              control={control}
-              id="email"
-              label="Customer Email"
-              placeholder="Enter customer email"
+
+            {/* Delivery Options */}
+            {deliveryType === deliveryTypeOptions[1].value && (
+              <Stack gap="2rem">
+                <Typography fontWeight="bold">Delivery Details</Typography>
+
+                {/* Address line */}
+                <Stack direction="row">
+                  <Input
+                    id="address"
+                    size="small"
+                    label="Address"
+                    control={control}
+                    fullWidth
+                    multiline
+                    rows={2}
+                  />
+                </Stack>
+
+                {/* Delivery Details 1 */}
+                <Stack mt="0.5rem" direction="row" gap="1rem">
+                  <CustomDatePicker
+                    control={control}
+                    id="deliveryDate"
+                    textFieldProps={{ size: "small" }}
+                    minDate={today()}
+                    label="Delivery Date"
+                  />
+                  <Input
+                    id="city"
+                    size="small"
+                    label="City"
+                    control={control}
+                    fullWidth
+                  />
+                </Stack>
+
+                {/* Delivery Details 2 */}
+                <Stack mt="0.5rem" direction="row" gap="1rem">
+                  <Input
+                    id="state"
+                    size="small"
+                    label="State"
+                    control={control}
+                    fullWidth
+                  />
+                  <Input
+                    id="zip"
+                    size="small"
+                    label="Zip"
+                    control={control}
+                    fullWidth
+                  />
+                </Stack>
+              </Stack>
+            )}
+          </Box>
+
+          {/* Right Content */}
+          <Box
+            component={Paper}
+            p="1.5rem"
+            display="flex"
+            flexDirection="column"
+            gap="2rem"
+            flexGrow={1}
+            overflow={{ xs: "initial", md: "auto" }}
+            justifyContent="space-between"
+          >
+            {/* Cart Information */}
+            <CartSection />
+
+            {/* Confirm Order */}
+            <Button
               fullWidth
-              size="small"
-            />
-            <Input
-              control={control}
-              id="phone"
-              label="Customer phone number"
-              placeholder="Enter customer phone number"
-              fullWidth
-              size="small"
-            />
-          </Stack>
+              variant="outlined"
+              onClick={() => setIsConfirmDialogOpen(true)}
+            >
+              Proceed to payment
+            </Button>
+          </Box>
         </Stack>
 
-        {/* Product Type */}
-        <Radio
-          id="productType"
-          options={productTypeOptions}
-          control={control}
-          label="Product Type"
-          row
+        {/* Dialogs */}
+        <AddProductsDialog open={isOpen} onClose={() => setIsOpen(false)} />
+        <ConfirmOrderDialog
+          open={isConfirmDialogOpen}
+          onClose={() => setIsConfirmDialogOpen(false)}
+          onConfirm={() => {
+            if (formRef.current) {
+              formRef.current.requestSubmit();
+            }
+          }}
         />
-
-        {/* Delivery Type */}
-        <Radio
-          id="deliveryType"
-          options={deliveryTypeOptions}
-          control={control}
-          label="Delivery Type"
-          row
-        />
-
-        {/* Delivery Options */}
-        {deliveryType === deliveryTypeOptions[1].value && (
-          <Stack gap="1rem">
-            <Typography fontWeight="bold">Delivery Details</Typography>
-            <Stack direction="row" gap="1rem">
-              <Input
-                id="address"
-                size="small"
-                label="Address"
-                control={control}
-                fullWidth
-                multiline
-                rows={2}
-              />
-            </Stack>
-            <Stack mt="0.5rem" direction="row" gap="1rem">
-              <CustomDatePicker
-                control={control}
-                id="deliveryDate"
-                textFieldProps={{ size: "small" }}
-                minDate={today()}
-                label="Delivery Date"
-              />
-              <Input
-                id="city"
-                size="small"
-                label="City"
-                control={control}
-                fullWidth
-              />
-              <Input
-                id="state"
-                size="small"
-                label="State"
-                control={control}
-                fullWidth
-              />
-              <Input
-                id="zip"
-                size="small"
-                label="Zip"
-                control={control}
-                fullWidth
-              />
-            </Stack>
-          </Stack>
-        )}
-
-        {/* <Dropdown
-          control={control}
-          id="productType"
-          options={productTypeOptions}
-          variant="outlined"
-          size="small"
-          label="Product Type"
-        /> */}
       </Box>
     </DashboardLayout>
   );
