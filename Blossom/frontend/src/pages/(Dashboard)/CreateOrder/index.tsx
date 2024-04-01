@@ -1,16 +1,23 @@
+import { useCreateOrderService } from "@/api/orderServices";
 import CustomDatePicker from "@/components/CustomDatePicker";
+import FullScreenLoader from "@/components/FullScreenLoader";
 import Input from "@/components/Input";
 import Radio from "@/components/Radio";
+import { getSignedInUserDetails } from "@/utils/authUtils";
 import { today } from "@/utils/dateUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import DashboardLayout from "..";
 import AddProductsDialog from "./AddProductsDialog";
 import CartSection from "./CartSection";
 import ConfirmOrderDialog from "./ConfirmOrderDialog";
-import useProductsStore, { calculateTotalPrice } from "./productsStore";
+import useProductsStore, {
+  UseProductsStoreProps,
+  calculateTotalPrice,
+} from "./productsStore";
 import {
   CreateOrderFormDataType,
   createOrderZodSchema,
@@ -18,37 +25,63 @@ import {
 } from "./typesAndData";
 
 const DashboardCreateOrderPage: React.FC = () => {
-  const { cart } = useProductsStore();
+  const user = getSignedInUserDetails();
+  const { mutate: createOrder, isPending } = useCreateOrderService();
+  const { cart, resetCart } = useProductsStore();
   const formRef = useRef<HTMLFormElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] =
     useState<boolean>(false);
-  const { control, watch, handleSubmit } = useForm<CreateOrderFormDataType>({
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      deliveryType: "",
-      deliveryDate: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    },
-    resolver: zodResolver(createOrderZodSchema),
-  });
+  const { control, watch, handleSubmit, reset } =
+    useForm<CreateOrderFormDataType>({
+      defaultValues: {
+        name: "",
+        email: "",
+        phone: "",
+        deliveryType: "",
+        deliveryDate: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+      resolver: zodResolver(createOrderZodSchema),
+    });
 
   const deliveryType = watch("deliveryType");
 
-  const handleCreateOrder = (data: CreateOrderFormDataType) => {
-    console.log(data, cart, calculateTotalPrice(cart));
+  const handleCreateOrder = (
+    data: CreateOrderFormDataType,
+    cartData: UseProductsStoreProps["cart"]
+  ) => {
+    if (!user) return;
+    const totalPrice = calculateTotalPrice(cart);
+    createOrder(
+      {
+        orderData: data,
+        totalPrice: totalPrice,
+        cartData: Object.values(cartData).map((item) => ({
+          product: { _id: item.product._id },
+          quantity: item.quantity,
+        })),
+        vendorId: user._id,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Order created successfully...");
+          reset();
+          resetCart();
+        },
+      }
+    );
   };
 
   return (
     <DashboardLayout>
+      <FullScreenLoader isLoading={isPending} label="Creating Order..." />
       <Box
         component="form"
-        onSubmit={handleSubmit(handleCreateOrder)}
+        onSubmit={handleSubmit((d) => handleCreateOrder(d, cart))}
         ref={formRef}
       >
         <Stack direction={{ xs: "column", md: "row" }} height="88vh" gap="1rem">
@@ -75,7 +108,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   placeholder="Enter customer name"
                   fullWidth
                   size="small"
-                  required
+                  // required
                 />
                 <Input
                   control={control}
@@ -84,7 +117,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   placeholder="Enter customer email"
                   fullWidth
                   size="small"
-                  required
+                  // required
                 />
                 <Input
                   control={control}
@@ -93,7 +126,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   placeholder="Enter customer phone number"
                   fullWidth
                   size="small"
-                  required
+                  // required
                   type="number"
                 />
               </Stack>
@@ -117,7 +150,7 @@ const DashboardCreateOrderPage: React.FC = () => {
               control={control}
               label="Delivery Type"
               row
-              required
+              // required
             />
 
             {/* Delivery Options */}
@@ -135,6 +168,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                     fullWidth
                     multiline
                     rows={2}
+                    required
                   />
                 </Stack>
 
@@ -143,7 +177,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   <CustomDatePicker
                     control={control}
                     id="deliveryDate"
-                    textFieldProps={{ size: "small" }}
+                    textFieldProps={{ size: "small", required: true }}
                     minDate={today()}
                     label="Delivery Date"
                   />
@@ -153,6 +187,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                     label="City"
                     control={control}
                     fullWidth
+                    required
                   />
                 </Stack>
 
@@ -164,6 +199,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                     label="State"
                     control={control}
                     fullWidth
+                    required
                   />
                   <Input
                     id="zip"
@@ -171,6 +207,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                     label="Zip"
                     control={control}
                     fullWidth
+                    required
                   />
                 </Stack>
               </Stack>
@@ -183,7 +220,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                 <CustomDatePicker
                   control={control}
                   id="deliveryDate"
-                  textFieldProps={{ size: "small" }}
+                  textFieldProps={{ size: "small", required: true }}
                   minDate={today()}
                   label="Pickup Date"
                 />
@@ -210,6 +247,7 @@ const DashboardCreateOrderPage: React.FC = () => {
               fullWidth
               variant="outlined"
               onClick={() => setIsConfirmDialogOpen(true)}
+              disabled={Object.keys(cart ?? {})?.length === 0}
             >
               Proceed to payment
             </Button>
