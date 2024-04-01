@@ -1,9 +1,6 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import p1 from '../../assets/product1.jpg';
-import p2 from '../../assets/product2.jpg';
-import p3 from '../../assets/product3.jpg';
 import backgroundImage from '../../assets/pexels-amar-preciado-13045649.jpg';
 import leftImage from '../../assets/pexels-nur-yilmaz-7784602.jpg';
 import customizeImage from '../../assets/customize.jpg';
@@ -55,9 +52,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                     Our Favorite Products
                 </Box>
                 <Box display="flex" justifyContent="center" flexWrap="wrap" gap={2}>
-                    <img src={p1} alt="Product 1" style={{ width: 'calc(33.33% - 10px)', maxWidth: '300px', borderRadius: '50px', marginBottom: '10px' }} />
-                    <img src={p2} alt="Product 2" style={{ width: 'calc(33.33% - 10px)', maxWidth: '300px', borderRadius: '50px', marginBottom: '10px' }} />
-                    <img src={p3} alt="Product 3" style={{ width: 'calc(33.33% - 10px)', maxWidth: '300px', borderRadius: '50px', marginBottom: '10px' }} />
+
                 </Box>
                 <Link to="/customer/catalog">
                     <Button
@@ -97,6 +92,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                             color="primary"
                             onClick={handlePlanEventClick}
                             sx={{ mt: 4, fontSize: '16px', padding: '8px 20px' }} // Adjusted button size
+
                         >
                             Plan an Event
                         </Button>
@@ -104,15 +100,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                 </div>
             </div>
             <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center', // Align content to center horizontally
-                marginTop: '0px',
-                padding: '0px',
-                height: '650px',
-                backgroundColor: '#e7feff',
-                borderRadius: '0px',
-                width: '100%', // Set width to 100% to fit the screen
+                // Set width to 100% to fit the screen
             }}>
                 <div style={{
                     flex: 1,
