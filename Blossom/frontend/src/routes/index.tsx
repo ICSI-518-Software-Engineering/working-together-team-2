@@ -1,6 +1,9 @@
+import DashboardCatalogPage from "@/pages/(Dashboard)/Catalog";
+import DashboardCreateOrderPage from "@/pages/(Dashboard)/CreateOrder";
+import DashboardOrdersHistoryPage from "@/pages/(Dashboard)/OrdersHistory";
+import DashboardOverviewPage from "@/pages/(Dashboard)/Overview";
 import SignInPage from "@/pages/Auth/Sign-In";
 import SignUpPage from "@/pages/Auth/Sign-Up";
-import DashboardPage from "@/pages/Dashboard";
 import HomePage from "@/pages/Home";
 import { getSignedInUserDetails } from "@/utils/authUtils";
 import { Box, Typography } from "@mui/material";
@@ -56,8 +59,20 @@ const AppRoutes: React.FC = () => {
       element: <VendorProtectedPagesWrapper />,
       children: [
         {
-          path: "dashboard",
-          element: <DashboardPage />,
+          path: "overview",
+          element: <DashboardOverviewPage />,
+        },
+        {
+          path: "create-order",
+          element: <DashboardCreateOrderPage />,
+        },
+        {
+          path: "orders-history",
+          element: <DashboardOrdersHistoryPage />,
+        },
+        {
+          path: "catalog",
+          element: <DashboardCatalogPage />,
         },
       ],
     },

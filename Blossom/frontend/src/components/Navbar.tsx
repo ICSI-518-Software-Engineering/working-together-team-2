@@ -67,7 +67,7 @@ const NavLinks: React.FC = () => {
   if (user && user.isVendor) {
     navLinks = [
       {
-        url: "/vendor/dashboard",
+        url: "/vendor/overview",
         label: "Dashboard",
       },
     ];
@@ -88,7 +88,7 @@ const NavLinks: React.FC = () => {
             to={navlink.url}
             color="secondary"
             variant={
-              pathname?.startsWith(navlink.url) ? "contained" : "outlined"
+              pathname?.startsWith("/vendor/") ? "contained" : "outlined"
             }
           >
             {navlink.label}
