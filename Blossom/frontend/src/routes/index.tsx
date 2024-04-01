@@ -1,5 +1,6 @@
 import SignInPage from "@/pages/Auth/Sign-In";
 import SignUpPage from "@/pages/Auth/Sign-Up";
+import DashboardPage from "@/pages/Dashboard";
 import HomePage from "@/pages/Home";
 import { getSignedInUserDetails } from "@/utils/authUtils";
 import { Box, Typography } from "@mui/material";
@@ -12,6 +13,8 @@ const AppRoutes: React.FC = () => {
       path: "/",
       element: <HomePage />,
     },
+
+    // Auth Pages
     {
       path: "/auth",
       element: <AuthRoutesWrapper />,
@@ -46,6 +49,20 @@ const AppRoutes: React.FC = () => {
         },
       ],
     },
+
+    // Vendor Specific Pages
+    {
+      path: "/vendor",
+      element: <VendorProtectedPagesWrapper />,
+      children: [
+        {
+          path: "dashboard",
+          element: <DashboardPage />,
+        },
+      ],
+    },
+
+    // Global Not Found Page
     {
       path: "*",
       element: (
@@ -87,10 +104,10 @@ const AuthRoutesWrapper: React.FC = () => {
 /**
  * Protected pages HOC
  */
-const ProtectedPagesWrapper: React.FC = () => {
+const VendorProtectedPagesWrapper: React.FC = () => {
   const user = getSignedInUserDetails();
-  if (!user) {
-    return <Navigate to="/auth/customer" replace />;
+  if (!user || !user.isVendor) {
+    return <Navigate to="/auth/vendor" replace />;
   }
   return <Outlet />;
 };

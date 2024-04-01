@@ -1,7 +1,6 @@
 import { getSignedInUserDetails } from "@/utils/authUtils";
 import {
   AppBar,
-  Avatar,
   Button,
   ButtonGroup,
   Stack,
@@ -10,16 +9,17 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import UserMenu from "./UserMenu";
 
 const Navbar: React.FC = () => {
   return (
-    <AppBar position="sticky" color="default">
+    <AppBar position="sticky" color="transparent">
       <Toolbar sx={{ gap: "1.5rem", justifyContent: "space-between" }}>
         {/* Navbar Logo  */}
         <Typography
-          letterSpacing={2}
+          letterSpacing={3}
           variant="h5"
-          fontWeight="bolder"
+          fontWeight="medium"
           component={Link}
           to="/"
           sx={(props) => ({
@@ -67,7 +67,7 @@ const NavLinks: React.FC = () => {
   if (user && user.isVendor) {
     navLinks = [
       {
-        url: "/dashboard",
+        url: "/vendor/dashboard",
         label: "Dashboard",
       },
     ];
@@ -97,7 +97,7 @@ const NavLinks: React.FC = () => {
       </ButtonGroup>
 
       {/* User Menu */}
-      {user && <Avatar sx={{ width: "2.5rem", height: "2.5rem" }} />}
+      {user && <UserMenu user={user} />}
     </Stack>
   );
 };

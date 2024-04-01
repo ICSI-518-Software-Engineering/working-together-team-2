@@ -2,9 +2,18 @@ import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
   palette: {
-    mode: "light",
-    // secondary: {
-    //   main: "#255",
-    // },
+    mode: "dark",
+    secondary: {
+      main: "#ffffff",
+    },
+    background: {
+      paper: "black",
+      default: "black",
+    },
+  },
+  mixins: {
+    toolbar: {
+      height: "5rem",
+    },
   },
 });

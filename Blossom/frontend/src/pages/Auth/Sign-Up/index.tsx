@@ -97,6 +97,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ vendor }) => {
         component={Link}
         to={vendor ? "/auth/vendor" : "/auth/customer"}
         mt="0.5rem"
+        color="secondary"
       >
         Already have an account?
       </Typography>

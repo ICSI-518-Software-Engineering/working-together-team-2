@@ -76,6 +76,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
         component={Link}
         to={vendor ? "/auth/vendor/sign-up" : "/auth/customer/sign-up"}
         mt="0.5rem"
+        color="secondary"
       >
         Don't have an account?
       </Typography>

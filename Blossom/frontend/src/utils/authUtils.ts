@@ -8,6 +8,11 @@ export const signInUser = (token: string) => {
   window.location.reload();
 };
 
+export const signOutUser = () => {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  window.location.href = "/";
+};
+
 export const getSignedInUserDetails = () => {
   try {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);

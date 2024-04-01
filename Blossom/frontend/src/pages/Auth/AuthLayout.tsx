@@ -15,7 +15,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   return (
     <Box
       display="flex"
-      height="calc(100vh - 20rem)"
+      height="80vh"
       width="100%"
       alignItems="center"
       justifyContent="center"
@@ -30,6 +30,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
         gap="2rem"
         borderRadius="1rem"
         width="40rem"
+        elevation={5}
       >
         <Typography variant="h5" textAlign="center" fontWeight={600} mb="2rem">
           {pageTitle}
