@@ -4,11 +4,48 @@ import {
     Checkbox, FormControlLabel, FormGroup, Typography, Autocomplete, TextField, Box,
     Grid, Pagination // Import Grid and Pagination here
 } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ig from '../../assets/ig.png';
 import wa from '../../assets/wa.png';
 import fb from '../../assets/fb.png';
 
 
+const theme = createTheme({
+    components: {
+        MuiPaginationItem: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-selected': {
+                        backgroundColor: '#ff8c00', // Selected page number background color
+                        color: 'white', // Selected page number text color
+                    },
+                    '&:hover': {
+                        backgroundColor: '#ffa726', // Hover state background color
+                        color: 'white', // Hover state text color
+                    },
+                    color: 'black', // Default text color
+                },
+            },
+        },
+    },
+});
+
+const ratingTheme = createTheme({
+    palette: {
+        primary: {
+            main: '#333', // Background color for the rating box
+        },
+        text: {
+            primary: '#ffffff', // Text color for the rating box
+        },
+    },
+    typography: {
+        fontSize: 12, // Font size for the rating
+        fontWeightBold: 700, // Font weight for the rating
+    },
+});
 
 
 interface Vendor {
@@ -215,7 +252,73 @@ const CatalogPage = () => {
                             />
                         </Box>
                     </Box>
-                    
+                    {selectedVendor && (
+                        <Grid container spacing={2} style={{ marginTop: theme.spacing(2) }}>
+                            {products
+                                .sort((a, b) => b.rating - a.rating) // Sort products by rating in descending order
+                                .slice((page - 1) * productsPerPage, page * productsPerPage) // Pagination logic
+                                .map((product, index) => (
+                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product)}>
+                                        <Box textAlign="center" p={2} boxShadow={2} borderRadius={2} position="relative">
+                                            {/* Rating displayed in top right corner */}
+                                            <ThemeProvider theme={ratingTheme}>
+                                                <Box
+                                                    position="absolute"
+                                                    top={0}
+                                                    right={0}
+                                                    zIndex={1}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                >
+                                                    {[...Array(product.rating)].map((_, i) => (
+                                                        <StarIcon key={i} fontSize="small" style={{ color: '#FFD700' }} />
+                                                    ))}
+                                                    {[...Array(5 - product.rating)].map((_, i) => (
+                                                        <StarBorderIcon key={i} fontSize="small" style={{ color: '#FFD700' }} />
+                                                    ))}
+                                                </Box>
+                                            </ThemeProvider>
+
+                                            <img src={product.imageUrl} alt={product.name} style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
+
+                                            {/* Centered box with pink background color containing product name and price */}
+                                            <Box
+                                                bgcolor="#FF69B4"
+                                                p={1}
+                                                mt={1}
+                                                borderRadius={4}
+                                                width="fit-content"
+                                                mx="auto" // Center the box horizontally
+                                            >
+                                                <Typography variant="body1" style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{product.name}</Typography>
+                                                <Typography variant="body2" style={{ color: '#87CEEB', fontWeight: 'bold' }}>${product.price.toFixed(2)}</Typography>
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                        </Grid>
+                    )}
+
+                    {/* Pagination component */}
+                    {selectedVendor && totalPages > 1 && (
+                        <ThemeProvider theme={theme}>
+                            <Box display="flex" justifyContent="center" mt={4}>
+                                <Pagination
+                                    count={totalPages}
+                                    page={page}
+                                    onChange={handlePageChange}
+                                    color="primary"
+                                />
+                            </Box>
+                        </ThemeProvider>
+                    )}
+
+
+
+                    {/* Additional content can go here */}
+
+                    {/* Modal for displaying product details */}
+
                 </div>
             </div>
             <div style={{
