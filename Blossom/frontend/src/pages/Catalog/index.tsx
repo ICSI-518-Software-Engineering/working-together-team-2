@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ProductModal from './ProductModal';
 import header from '../../assets/header.png';
 import {
     Checkbox, FormControlLabel, FormGroup, Typography, Autocomplete, TextField, Box,
@@ -318,7 +319,13 @@ const CatalogPage = () => {
                     {/* Additional content can go here */}
 
                     {/* Modal for displaying product details */}
-
+                    {selectedProduct && (
+                        <ProductModal
+                            product={selectedProduct}
+                            isOpen={modalOpen}
+                            onClose={handleCloseModal}
+                        />
+                    )}
                 </div>
             </div>
             <div style={{
