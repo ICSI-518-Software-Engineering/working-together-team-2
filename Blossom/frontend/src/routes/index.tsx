@@ -4,6 +4,11 @@ import DashboardOrdersHistoryPage from "@/pages/(Dashboard)/OrdersHistory";
 import DashboardOverviewPage from "@/pages/(Dashboard)/Overview";
 import SignInPage from "@/pages/Auth/Sign-In";
 import SignUpPage from "@/pages/Auth/Sign-Up";
+import StorePage from "@/pages/Store";
+import CatalogPage from "@/pages/Catalog";
+
+
+
 import HomePage from "@/pages/Home";
 import { getSignedInUserDetails } from "@/utils/authUtils";
 import { Box, Typography } from "@mui/material";
@@ -77,6 +82,37 @@ const AppRoutes: React.FC = () => {
       ],
     },
 
+    // Customer Specific Pages
+    {
+      path: "/customer",
+      element: <CustomerProtectedPagesWrapper />,
+      children: [
+        {
+          path: "store",
+          element: <StorePage />,
+        },
+        {
+          path: "catalog",
+          element: <CatalogPage />,
+        },
+        {
+          path: "cart",
+          element: <CatalogPage />,
+        },
+        {
+          path: "checkout",
+          element: <CatalogPage />,
+        },
+        {
+          path: "orders",
+          element: <CatalogPage />,
+        },
+        {
+          path: "customize",
+          element: <CatalogPage />,
+        },
+      ],
+    },
     // Global Not Found Page
     {
       path: "*",
@@ -123,6 +159,14 @@ const VendorProtectedPagesWrapper: React.FC = () => {
   const user = getSignedInUserDetails();
   if (!user || !user.isVendor) {
     return <Navigate to="/auth/vendor" replace />;
+  }
+  return <Outlet />;
+};
+
+const CustomerProtectedPagesWrapper: React.FC = () => {
+  const user = getSignedInUserDetails();
+  if (!user || user.isVendor) {
+    return <Navigate to="/auth/customer" replace />;
   }
   return <Outlet />;
 };
