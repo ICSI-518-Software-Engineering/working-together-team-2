@@ -6,7 +6,6 @@ import SignInPage from "@/pages/Auth/Sign-In";
 import SignUpPage from "@/pages/Auth/Sign-Up";
 import StorePage from "@/pages/Store";
 import CatalogPage from "@/pages/Catalog";
-import CartPage from "@/pages/Cart";
 import CustomizePage from "@/pages/Customize";
 
 
@@ -98,15 +97,15 @@ const AppRoutes: React.FC = () => {
         },
         {
           path: "cart",
-          element: <CartPage />,
+          element: <CatalogPage />,
         },
         {
           path: "checkout",
-          element: <CartPage />,
+          element: <CatalogPage />,
         },
         {
           path: "orders",
-          element: <CartPage />,
+          element: <CatalogPage />,
         },
         {
           path: "customize",
