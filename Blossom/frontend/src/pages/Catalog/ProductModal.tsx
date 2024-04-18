@@ -74,7 +74,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         fullWidth
                         style={{ marginTop: '10px' }}
                     >
-                        Add to Cart
+                        Add to Cart but
                     </Button>
                     <Button
                         startIcon={<MonetizationOnIcon />}
