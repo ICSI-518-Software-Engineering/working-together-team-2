@@ -10,7 +10,7 @@ export const cartItemSchema = new Schema({
             required: true
         },
         name: String,
-        imageUrl: String,
+        image: String,
         description: String,
         price: Number
     },
