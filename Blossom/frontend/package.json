@@ -19,6 +19,7 @@
     "@mui/x-date-pickers": "^6.19.6",
     "@tanstack/react-query": "^5.24.7",
     "axios": "^1.6.7",
+    "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.10",
     "file64": "^1.0.3",
     "jwt-decode": "^4.0.0",
@@ -28,7 +29,8 @@
     "react-hook-form": "^7.51.0",
     "react-router-dom": "^6.22.2",
     "zod": "^3.22.4",
-    "zod-password-validation-schema": "^0.0.2"
+    "zod-password-validation-schema": "^0.0.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",

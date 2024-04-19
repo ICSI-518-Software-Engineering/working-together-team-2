@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ThemeProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
-            <CssBaseline />
+            <CssBaseline enableColorScheme />
             <App />
           </QueryClientProvider>
         </ThemeProvider>

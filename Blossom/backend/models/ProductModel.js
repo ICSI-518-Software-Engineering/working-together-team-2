@@ -3,40 +3,43 @@ import { z } from "zod";
 
 const productTypes = ["Flower", "Vase", "FlowerAndVase"];
 
-export const ProductMongooseSchema = new Schema({
-  image: {
-    type: String,
+export const ProductMongooseSchema = new Schema(
+  {
+    image: {
+      type: String,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    tags: {
+      type: [String],
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: productTypes,
+    },
+    stockInNumber: {
+      type: Number,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  tags: {
-    type: [String],
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-    enum: productTypes,
-  },
-  stockInNumber: {
-    type: Number,
-    required: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true }
+);
 
 const ProductModel = mongoose.model("product", ProductMongooseSchema);
 

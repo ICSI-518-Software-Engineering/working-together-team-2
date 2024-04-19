@@ -12,7 +12,7 @@ productRouter.get("/:productId?", async (req, res) => {
 
     // If no product id
     if (!productId) {
-      const products = await ProductModel.find({});
+      const products = await ProductModel.find({}).sort({ updatedAt: -1 });
       return res.json(products);
     }
 
