@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Box, Typography, Button, Modal, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StarIcon from '@mui/icons-material/Star';
@@ -6,6 +7,8 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { getSignedInUserDetails } from '@/utils/authUtils';
+import { addToCart, buyNow } from '../../api/cartService';
 
 // Define the theme for the modal here or import from your themes file
 const modalTheme = createTheme({
@@ -25,20 +28,74 @@ const modalTheme = createTheme({
 
 // Define the Product interface to describe the expected structure of props
 interface Product {
+    id: string
     name: string;
     price: number;
     rating: number;
     imageUrl: string;
     description: string;
 }
+interface Vendor {
+    id: string; // Add ID property
+    name: string;
+    email: string;
+}
 
 interface ProductModalProps {
+    vendor: Vendor;
     product: Product;
     isOpen: boolean;
     onClose: () => void;
 }
+function handleError(error: unknown): string {
+    if (typeof error === "string") {
+        return error;
+    } else if (error instanceof Error) {
+        return error.message;
+    } else {
+        return "An unknown error occurred";
+    }
+}
 
-const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose }) => {
+
+const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, onClose }) => {
+    const user = getSignedInUserDetails(); // Using Context to get user details
+
+    const handleAddToCart = async () => {
+        if (!user) {
+            alert('Please sign in to add items to your cart.');
+            return;
+        }
+        try {
+            await addToCart({
+                userId: user._id,
+                productId: product.id,
+                vendorId: vendor.id,
+                quantity: 1
+            });
+            alert('Product added to cart!');
+        } catch (error) {
+            alert(`Failed to add product to cart: ${handleError(error)}`);
+        }
+    };
+
+    const handleBuyNow = async () => {
+        if (!user) {
+            alert('Please sign in to purchase items.');
+            return;
+        }
+        try {
+            await buyNow({
+                userId: user._id,
+                productId: product.id,
+                vendorId: vendor.id,
+                quantity: 1
+            });
+            alert('Purchase successful!');
+        } catch (error) {
+            alert();
+        }
+    };
     return (
         <ThemeProvider theme={modalTheme}>
             <Modal open={isOpen} onClose={onClose}>
@@ -72,15 +129,17 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         variant="contained"
                         color="primary"
                         fullWidth
+                        onClick={handleAddToCart}
                         style={{ marginTop: '10px' }}
                     >
-                        Add to Cart but
+                        Add to Cart
                     </Button>
                     <Button
                         startIcon={<MonetizationOnIcon />}
                         variant="contained"
                         color="secondary"
                         fullWidth
+                        onClick={handleAddToCart}
                         style={{ marginTop: '10px' }}
                     >
                         Buy Now

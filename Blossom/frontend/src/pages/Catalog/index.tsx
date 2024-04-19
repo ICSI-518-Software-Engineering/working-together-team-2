@@ -56,6 +56,7 @@ interface Vendor {
 }
 
 interface Product {
+    id: string;
     name: string;
     price: number;
     rating: number;
@@ -119,7 +120,7 @@ interface Product {
 // };
 const productsPerPage = 12;
 const CatalogPage = () => {
-    const [selectedVendor, setSelectedVendor] = React.useState<Vendor | null>(null);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -130,7 +131,10 @@ const CatalogPage = () => {
 
 
     // Function to handle opening modal
-    const handleOpenModal = (product: Product) => {
+    const handleOpenModal = (product: Product,vendor:Vendor) => {
+        console.log(product.id);
+
+        setSelectedVendor(vendor);
         setSelectedProduct(product);
         setModalOpen(true);
     };
@@ -190,6 +194,7 @@ const CatalogPage = () => {
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
+                    id: data._id,
                     name: data.name,
                     price: data.price,
                     rating: data.rating || 5,
@@ -285,7 +290,7 @@ const CatalogPage = () => {
                                 .sort((a, b) => b.rating - a.rating) // Sort products by rating in descending order
                                 .slice((page - 1) * productsPerPage, page * productsPerPage) // Pagination logic
                                 .map((product, index) => (
-                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product)}>
+                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product, selectedVendor)}>
                                         <Box textAlign="center" p={2} boxShadow={2} borderRadius={2} position="relative">
                                             {/* Rating displayed in top right corner */}
                                             <ThemeProvider theme={ratingTheme}>
@@ -345,9 +350,10 @@ const CatalogPage = () => {
                     {/* Additional content can go here */}
 
                     {/* Modal for displaying product details */}
-                    {selectedProduct && (
+                    {selectedProduct && selectedVendor && (
                         <ProductModal
                             product={selectedProduct}
+                            vendor={selectedVendor}
                             isOpen={modalOpen}
                             onClose={handleCloseModal}
                         />

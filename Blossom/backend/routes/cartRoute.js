@@ -1,7 +1,7 @@
 import { Router } from "express";
 import CartModel from "../models/CartModel.js";
-import ProductModel from "d:/downloads/Blossom/backend/models/ProductModel.js";
-import UserModel from "d:/downloads/Blossom/backend/models/UserModel.js";
+import ProductModel from "../models/ProductModel.js";
+import UserModel from "../models/UserModel.js";
 
 const cartRouter = Router();
 
