@@ -12,7 +12,7 @@ productRouter.get("/:productId?", async (req, res) => {
 
     // If no product id
     if (!productId) {
-      const products = await ProductModel.find({}).sort({ updatedAt: -1 });
+      const products = await ProductModel.find({});
       return res.json(products);
     }
 
@@ -36,26 +36,6 @@ productRouter.post("/", async (req, res) => {
     const newProduct = new ProductModel(product);
     await newProduct.save();
     return res.send("Product saved successfully");
-  } catch (error) {
-    sendErrorResponse(error, res);
-  }
-});
-
-productRouter.put("/:productId", async (req, res) => {
-  try {
-    const product = validateNewProductRequest(req.body);
-
-    await ProductModel.findByIdAndUpdate(req.params.productId, product);
-    return res.send("Product updated successfully");
-  } catch (error) {
-    sendErrorResponse(error, res);
-  }
-});
-
-productRouter.delete("/:productId", async (req, res) => {
-  try {
-    await ProductModel.findByIdAndDelete(req.params.productId);
-    return res.send("Product deleted successfully");
   } catch (error) {
     sendErrorResponse(error, res);
   }

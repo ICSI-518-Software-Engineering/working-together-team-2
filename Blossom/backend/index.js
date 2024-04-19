@@ -6,7 +6,7 @@ import { initializeRoutes } from "./routes/index.js";
 
 const app = express();
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json());
 app.use(cors());
 
 dotenv.config();

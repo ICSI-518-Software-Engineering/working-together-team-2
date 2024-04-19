@@ -1,53 +1,20 @@
 import mongoose, { Schema } from "mongoose";
+import { ProductOrderMongooseSchema } from "./ProductOrderModel";
+import { UserMongooseSchema } from "./UserModel";
 
 export const OrderMongooseSchema = new Schema({
-  products: [
-    {
-      productId: {
-        type: mongoose.Types.ObjectId,
-        ref: "product",
-        unique: false,
-      },
-      quantity: Number,
-    },
-  ],
-  vendorId: {
-    type: mongoose.Types.ObjectId,
-    ref: "user",
-    unique: false,
-  },
-  customerDetails: {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    address: String,
-    city: String,
-    state: String,
-    zip: String,
-  },
+  products: [ProductOrderMongooseSchema],
+  userId: UserMongooseSchema,
   price: {
     type: Number,
   },
   status: {
     type: String,
-    enum: ["Pending", "Complete", "Cancelled"],
+    enum: ["PENDING", "DONE"],
   },
-  deliveryType: {
+  orderType: {
     type: String,
-    enum: ["Pickup", "Delivery"],
-  },
-  deliveryDate: {
-    type: Date,
-    required: true,
+    enum: ["PICKUP", "DELIVERY"],
   },
 });
 
