@@ -129,7 +129,30 @@ const CartPage: React.FC = () => {
                     </Toolbar>
                 </AppBar>
 
-                
+                    {/* Footer */}
+                    <div style={{
+                    backgroundColor: '#002e63',
+                    color: 'white',
+                    padding: '20px',
+                    textAlign: 'center',
+                    borderRadius: '8px',
+                }}>
+                    <h3>Contact Us</h3>
+                    <p>Email: example@example.com</p>
+                    <p>Contact: +1 123 456 7890</p>
+                    <p>Address: 123 Main Street, City, Country</p>
+                    <div style={{ marginTop: '20px' }}>
+                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+                            <img src={ig} alt="Instagram" style={{ width: '45px', marginRight: '10px' }} />
+                        </a>
+                        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+                            <img src={fb} alt="Facebook" style={{ width: '30px', marginRight: '10px' }} />
+                        </a>
+                        <a href="https://api.whatsapp.com/send?phone=1234567890" target="_blank" rel="noopener noreferrer">
+                            <img src={wa} alt="WhatsApp" style={{ width: '50px' }} />
+                        </a>
+                    </div>
+                </div>            
 
 
    
