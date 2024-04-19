@@ -129,8 +129,101 @@ const CartPage: React.FC = () => {
                     </Toolbar>
                 </AppBar>
 
-                    {/* Footer */}
-                    <div style={{
+                {/* The main content of the page */}
+                {/* Main content */}
+                <TableContainer component={Paper} elevation={0} sx={{ mx: 'auto', my: '20px', width: '80%', borderRadius: '8px', bgcolor: '#f4f0ec' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product</TableCell>
+                                <TableCell align="right">Price</TableCell>
+                                <TableCell align="right">Quantity</TableCell>
+                                <TableCell align="right">Total</TableCell>
+                                <TableCell align="right">Delete</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {cartItems.map((item) => (
+                                <TableRow key={item.id}>
+                                    <TableCell component="th" scope="row">
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src={item.product.imageUrl} alt={item.product.name} style={{ width: '50px', marginRight: '20px' }} />
+                                            <Typography>{item.product.name}</Typography>
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell align="right">${item.product.price}</TableCell>
+                                    <TableCell align="right">
+                                        <TextField
+                                            type="number"
+                                            value={item.quantity}
+                                            onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                                            sx={{ width: '60px' }}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="right">${(item.quantity * item.quantity).toFixed(2)}</TableCell>
+                                    <TableCell align="right">
+                                        <Button color="error" onClick={() => handleRemoveItem(item.id)}>
+                                            <DeleteIcon />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    {/* Centered Coupon Section */}
+                    <Grid container justifyContent="center" spacing={2}>
+                        <Grid item xs={12} sm={8} md={6} lg={4}>
+                            <Paper elevation={1} sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 2 }}>
+                                <TextField
+                                    label="Use Coupon"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={coupon}
+                                    onChange={handleCouponChange}
+                                />
+                                <Button variant="contained" color="primary" sx={{ ml: 2 }}>
+                                    Apply
+                                </Button>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+
+                    {/* Centered Order Total Section */}
+                    <Grid container justifyContent="center" spacing={2}>
+                        <Grid item xs={12} sm={8} md={6} lg={4}>
+                            <Paper elevation={1} sx={{ p: 2, my: 2 }}>
+                                <Typography variant="h6" gutterBottom>
+                                    Cart Total
+                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
+                                    <Typography variant="body1">Total products</Typography>
+                                    <Typography variant="body1">${totalCost.toFixed(2)}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
+                                    <Typography variant="h6">Grand Total</Typography>
+                                    <Typography variant="h6">${totalCost.toFixed(2)}</Typography>
+                                </Box>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    sx={{
+                                        width: '100%',
+                                        mt: 2,
+                                        py: '10px',
+                                        bgcolor: 'error.main',
+                                        '&:hover': { bgcolor: 'error.dark' }
+                                    }}
+                                >
+                                    PROCEED TO CHECKOUT
+                                </Button>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                </TableContainer>
+
+
+                {/* Footer */}
+                <div style={{
                     backgroundColor: '#002e63',
                     color: 'white',
                     padding: '20px',
@@ -152,11 +245,7 @@ const CartPage: React.FC = () => {
                             <img src={wa} alt="WhatsApp" style={{ width: '50px' }} />
                         </a>
                     </div>
-                </div>            
-
-
-   
-                
+                </div>
             </Box>
         </ThemeProvider>
     );
