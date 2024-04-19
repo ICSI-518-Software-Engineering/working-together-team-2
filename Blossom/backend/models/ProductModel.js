@@ -32,6 +32,10 @@ export const ProductMongooseSchema = new Schema({
     type: Number,
     required: true,
   },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const ProductModel = mongoose.model("product", ProductMongooseSchema);
@@ -53,6 +57,7 @@ const productZodSchema = z.object({
     .min(0, {
       message: "Stock in number should be greater than or equal to 0",
     }),
+  isActive: z.boolean().optional(),
 });
 
 export const validateNewProductRequest = (product) => {

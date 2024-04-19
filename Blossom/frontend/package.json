@@ -20,6 +20,7 @@
     "@tanstack/react-query": "^5.24.7",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
+    "file64": "^1.0.3",
     "jwt-decode": "^4.0.0",
     "material-react-table": "^2.12.1",
     "react": "^18.2.0",
