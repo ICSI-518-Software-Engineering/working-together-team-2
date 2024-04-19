@@ -124,6 +124,10 @@ const CatalogPage = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
+    const [priceFilter, setPriceFilter] = useState<string[]>([]);
+    const [ingredientFilter, setIngredientFilter] = useState<string[]>([]);
+    // Filter products based on price
+
 
     // Function to handle opening modal
     const handleOpenModal = (product: Product) => {
@@ -131,6 +135,27 @@ const CatalogPage = () => {
         setModalOpen(true);
     };
     const [page, setPage] = useState(1);
+
+    const applyFilters = () => {
+        return products
+            .filter(product => priceFilter.length === 0 || priceFilter.some(range => {
+                const [min, max] = range.split('-').map(Number);
+                return product.price >= min && product.price <= max;
+            }))
+            .filter(product => ingredientFilter.length === 0 || ingredientFilter.some(ingredient => product.description.toLowerCase().includes(ingredient.toLowerCase())));
+    };
+    const handlePriceFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { checked, value } = event.target;
+        setPriceFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
+    };
+
+    const handleIngredientFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { checked, value } = event.target;
+        setIngredientFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
+    };
+
+
+    const filteredProducts = applyFilters();
     const totalProducts = selectedVendor ? products.length : 0;
     const totalPages = Math.ceil(totalProducts / productsPerPage);
 
@@ -189,22 +214,23 @@ const CatalogPage = () => {
         <>
             <div style={{ display: 'flex', backgroundColor: 'white', minHeight: '100vh' }}>
                 {/* Sidebar */}
+                {/* Filters Section */}
                 <div style={{ width: '250px', padding: '20px', backgroundColor: '#f4f4f4', color: 'black' }}>
                     <Typography variant="h6" style={{ marginBottom: '10px' }}>Filters</Typography>
                     {/* Price Filter */}
                     <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Price</Typography>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox />} label="0-50" />
-                        <FormControlLabel control={<Checkbox />} label="50-100" />
+                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="0-50" />} label="0-50" />
+                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="50-100" />} label="50-100" />
                         {/* Add more price ranges */}
                     </FormGroup>
 
                     {/* Ingredient Filter */}
                     <Typography variant="subtitle1" style={{ margin: '20px 0' }}>Ingredients</Typography>
                     <FormGroup>
+                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Roses" />} label="Roses" />
+                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Sunflowers" />} label="Sunflowers" />
                         {/* Add checkboxes for each ingredient */}
-                        <FormControlLabel control={<Checkbox />} label="Roses" />
-                        <FormControlLabel control={<Checkbox />} label="Sunflowes" />
                     </FormGroup>
                 </div>
 
@@ -255,7 +281,7 @@ const CatalogPage = () => {
                     </Box>
                     {selectedVendor && (
                         <Grid container spacing={2} style={{ marginTop: theme.spacing(2) }}>
-                            {products
+                            {filteredProducts
                                 .sort((a, b) => b.rating - a.rating) // Sort products by rating in descending order
                                 .slice((page - 1) * productsPerPage, page * productsPerPage) // Pagination logic
                                 .map((product, index) => (
