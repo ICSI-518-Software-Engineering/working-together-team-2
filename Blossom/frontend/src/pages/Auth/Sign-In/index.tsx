@@ -1,6 +1,6 @@
 import { useLoginService } from "@/api/authServices";
 import Input from "@/components/Input";
-import { signInUser } from "@/utils/authUtils";
+import { decodeJWT, signInUser } from "@/utils/authUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, CircularProgress, Typography } from "@mui/material";
 import { AxiosError } from "axios";
@@ -27,7 +27,12 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
   const handleLogin = useCallback(
     (data: SignInSchemaType) => {
       mutate(data, {
-        onSuccess: (d) => signInUser(d),
+        onSuccess: (d) => {
+          const user = decodeJWT(d);
+          if (!user) return;
+
+          signInUser(d, user.isVendor ? "/vendor/dashboard" : "/customer/store")
+        },
         onError: (e) => {
           if (e instanceof AxiosError) {
             setError("email", { message: e?.response?.data });
