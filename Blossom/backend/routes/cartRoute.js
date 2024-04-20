@@ -84,7 +84,7 @@ cartRouter.post('/create-orders', async (req, res) => {
             await order.save();
             // Update product quantities
             await Promise.all(orderData.products.map(async product => {
-                await ProductModel.findByIdAndUpdate(product.productId, { $inc: { quantity: -product.quantity } });
+                await ProductModel.findByIdAndUpdate(product.productId, { $inc: { stockInNumber: -product.quantity } });
             }));
         }
 
