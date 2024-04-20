@@ -1,6 +1,6 @@
-import { Stack, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import React from "react";
-import CartItem from "./CartItem";
+import CartItemsDisplay from "./CartItemsDisplay";
 import useProductsStore from "./productsStore";
 
 const CartSection: React.FC = () => {
@@ -16,11 +16,7 @@ const CartSection: React.FC = () => {
         {cartProducts?.length > 0 ? `(${cartProducts.length} Products)` : ""}
       </Typography>
       {/* Cart Products */}
-      <Stack gap="3rem" overflow="auto" mb="auto">
-        {cartProducts?.map((item) => (
-          <CartItem key={item.product._id} {...item} />
-        ))}
-      </Stack>
+      <CartItemsDisplay cartProducts={cartProducts} />
     </>
   );
 };
