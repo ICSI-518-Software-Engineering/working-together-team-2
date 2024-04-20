@@ -5,9 +5,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 /**
  * Get Catalog Service
  */
-export type GetCatalogServiceRecordType = Required<CatalogItemDataType>;
 const getCatalogService = async (productId?: string) => {
-  const res = await http.get<GetCatalogServiceRecordType[]>(
+  const res = await http.get<CatalogItemDataType[]>(
     `/products/${productId ?? ""}`
   );
   return res.data;
