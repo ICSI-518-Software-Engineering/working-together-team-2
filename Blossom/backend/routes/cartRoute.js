@@ -88,28 +88,5 @@ cartRouter.put('/update-quantity', async (req, res) => {
     }
 });
 
-cartRouter.delete('/remove-item', async (req, res) => {
-    const { userId, productId } = req.body;
-
-    try {
-        await validateCustomer(userId); // Validate user
-
-        const cart = await CartModel.findOneAndUpdate(
-            { user: userId },
-            { $pull: { items: { "product.id": productId } } },
-            { new: true }
-        );
-        if (!cart) {
-            return res.status(404).send('Cart not found');
-
-        if (!vendor || vendor.isVendor !== true) {
-            return res.status(404).send('Invalid vendor');
-    
-        }
-        res.status(200).json(cart);
-    } catch (error) {
-        res.status(500).send('Error removing item from cart: ' + error.message);
-    }
-});
 
 export default cartRouter;
