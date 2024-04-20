@@ -25,9 +25,6 @@ cartRouter.post('/update-cart', async (req, res) => {
         if (!product) {
             return res.status(404).send('Product not found');
         }
-        if (!vendor || vendor.isVendor !== true) {
-            return res.status(404).send('Invalid vendor');
-        }
 
         let cart = await CartModel.findOne({ user: userId });
         if (!cart) {
@@ -104,6 +101,10 @@ cartRouter.delete('/remove-item', async (req, res) => {
         );
         if (!cart) {
             return res.status(404).send('Cart not found');
+
+        if (!vendor || vendor.isVendor !== true) {
+            return res.status(404).send('Invalid vendor');
+    
         }
         res.status(200).json(cart);
     } catch (error) {
