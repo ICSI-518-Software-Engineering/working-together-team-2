@@ -27,7 +27,13 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
   const handleLogin = useCallback(
     (data: SignInSchemaType) => {
       mutate(data, {
-        onSuccess: (d) => signInUser(d),
+        onSuccess: (d) => {
+          if (vendor) {
+            signInUser(d, "/vendor/overview");
+          } else {
+            signInUser(d);
+          }
+        },
         onError: (e) => {
           if (e instanceof AxiosError) {
             setError("email", { message: e?.response?.data });
@@ -35,7 +41,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
         },
       });
     },
-    [mutate, setError]
+    [mutate, setError, vendor]
   );
 
   return (
