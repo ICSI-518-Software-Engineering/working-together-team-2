@@ -164,6 +164,7 @@ const CatalogPage = () => {
     const totalPages = Math.ceil(totalProducts / productsPerPage);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        event;
         setPage(value);
     };
     useEffect(() => {
@@ -190,6 +191,7 @@ const CatalogPage = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = (vendorId: string) => {
+        vendorId;
         fetch(`http://localhost:8086/api/products/in-stock`)
             .then(response => response.json())
             .then((responseData: any[]) => {
@@ -263,6 +265,7 @@ const CatalogPage = () => {
                                 )}
                                 value={selectedVendor}
                                 onChange={(event: any, newVendor: Vendor | null) => {
+                                    event;
                                     setSelectedVendor(newVendor);
                                     setPage(1);
                                 }}

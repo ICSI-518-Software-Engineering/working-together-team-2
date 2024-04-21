@@ -1,6 +1,6 @@
-// src/api/cartService.ts
+// src/api/cartServices.ts
 import axios from 'axios';
-const API_URL = 'http://localhost:8086/api/cart'; 
+const API_URL = 'http://localhost:8086/api/cart';
 
 // Interface for adding to cart
 interface AddToCartParams {
@@ -9,6 +9,23 @@ interface AddToCartParams {
   vendorId: string;
   quantity: number;
 }
+interface CustomerDetails {
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  deliveryDate: Date;
+}
+
+export const createOrders = async (userId: string, details: CustomerDetails) => {
+  try {
+    const response = await axios.post('http://localhost:8086/api/cart/create-orders', { userId, details });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to create orders:", error);
+    throw error;
+  }
+};
 
 // Function to add product to cart
 export const addToCart = async (params: AddToCartParams): Promise<void> => {
@@ -22,50 +39,58 @@ export const addToCart = async (params: AddToCartParams): Promise<void> => {
 };
 
 // Function to immediately buy the product
-export const buyNow = async (params: AddToCartParams): Promise<void> => {
+export const buyNow = async (userId: string, productId: string, vendorId: string, details: CustomerDetails) => {
   try {
-    const response = await axios.post('http://localhost:8086/api/cart/buy-now', params); // Assuming there's a buy-now endpoint
-    console.log('Purchase completed:', response.data);
+    const response = await axios.post('http://localhost:8086/api/order/buy-now', {
+      userId,
+      productId,
+      vendorId,
+      details
+    });
+    return response.data;
   } catch (error) {
-    console.error('Error processing purchase:', error);
-    throw new Error('Failed to complete purchase');
+    console.error("Failed to create orders:", error);
+    throw error;
   }
 };
 
- // Update to your API's base URL
+
+// Update to your API's base URL
 
 export const fetchCart = async (userId: string) => {
-    try {
-        const response = await axios.get(${API_URL}?userId=${userId});
-        return response.data;
-    } catch (error) {
-        console.error('Failed to fetch cart:', error);
-        throw error;
-    }
+  try {
+    const response = await axios.get(`${API_URL}?userId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch cart:', error);
+    throw error;
+  }
 };
 
 export const updateCartItemQuantity = async (userId: string, productId: string, quantity: number) => {
-    try {
-        const response = await axios.put(${API_URL}/update-item, {
-            userId,
-            productId,
-            quantity
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Failed to update cart item:', error);
-        throw error;
-    }
+  try {
+    const response = await axios.put(`${API_URL}/update-quantity`, {
+      userId,
+      productId,
+      quantity
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update cart item:', error);
+    throw error;
+  }
 };
 
 export const removeCartItem = async (userId: string, productId: string) => {
-    try {
-        const response = await axios.delete(${API_URL}/remove-item, {
-            data: { userId, productId }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Failed to remove cart item:', error);
-        throw error;
-    }
+  try {
+    const response = await axios.delete(`${API_URL}/remove-item`, {
+      data: { userId, productId }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to remove cart item:', error);
+    throw error;
+  }
+
 };
+

@@ -13,7 +13,7 @@ export const catalogFormDataZodSchema = z
         message: "Price should be greater than  or equal to 0",
       }),
     tags: z.string().array().min(1),
-    type: z.enum(["Flower", "Vase", "FlowerAndVase"]),
+    type: z.enum(["Flower", "Vase", "FlowerAndVase", "Custom"]),
     stockInNumber: z
       .union([z.string(), z.number()])
       .refine((item) => Number(item) >= 0, {

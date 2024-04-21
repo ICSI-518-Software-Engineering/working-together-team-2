@@ -2,14 +2,10 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { useState } from 'react';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
-import { getSignedInUserDetails } from '@/utils/authUtils';
-import { createOrders } from '../../api/cartServices';
+import { buyNow } from '../../api/cartServices';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 
-interface CheckoutModalProps {
-    open: boolean;
-    onClose: () => void;
-}
+
 
 interface CustomerDetails {
     address: string;
@@ -87,8 +83,15 @@ const theme = createTheme({
         },
     },
 });
+interface BuyNowModalProps {
+    open: boolean;
+    onClose: () => void;
+    productId: string;
+    vendorId: string;
+    userId: string;
+}
 
-const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose }) => {
+const BuyNowModal: React.FC<BuyNowModalProps> =  ({ open, onClose, productId, vendorId, userId }) => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const appliedTheme = React.useMemo(() => createTheme(prefersDarkMode ? theme : theme), [prefersDarkMode]);
     const [details, setDetails] = useState<CustomerDetails>({
@@ -103,8 +106,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose }) => {
         setDetails({ ...details, [event.target.name]: event.target.value });
     };
 
-    const user = getSignedInUserDetails();
-    const userId = user?._id;
 
     const handleConfirm = async () => {
         if (userId && details.deliveryDate) {
@@ -113,11 +114,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose }) => {
             const dateObject: Date = new Date(dateMillis);
             const detailsWithDate = { ...details, deliveryDate: dateObject };
             try {
-                await createOrders(userId, detailsWithDate);
+                await buyNow(userId,productId,vendorId, detailsWithDate);
                 alert('Order placed successfully!');
                 onClose();
-                location.reload();
-
             } catch (error) {
                 console.error('Failed to place order:', error);
                 alert('Failed to place order.');
@@ -129,72 +128,72 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose }) => {
 
     return (
         <ThemeProvider theme={appliedTheme}>
-            <CssBaseline />  {/* Apply baseline CSS to normalize styles */}
-            <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-                <DialogTitle>Enter Shipping Details</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        name="address"
-                        label="Address"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        value={details.address}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="city"
-                        label="City"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        value={details.city}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="state"
-                        label="State"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        value={details.state}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="zip"
-                        label="ZIP Code"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        value={details.zip}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="deliveryDate"
-                        label="Delivery Date"
-                        type="date"
-                        fullWidth
-                        variant="outlined"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        value={details.deliveryDate}
-                        onChange={handleChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onClose} color="primary">Cancel</Button>
-                    <Button onClick={handleConfirm} color="primary">Confirm</Button>
-                </DialogActions>
-            </Dialog>
+        <CssBaseline />  {/* Apply baseline CSS to normalize styles */}
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Enter Shipping Details</DialogTitle>
+            <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="address"
+                            label="Address"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={details.address}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="city"
+                            label="City"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={details.city}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="state"
+                            label="State"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={details.state}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="zip"
+                            label="ZIP Code"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={details.zip}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="deliveryDate"
+                            label="Delivery Date"
+                            type="date"
+                            fullWidth
+                            variant="outlined"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={details.deliveryDate}
+                            onChange={handleChange}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={onClose} color="primary">Cancel</Button>
+                        <Button onClick={handleConfirm} color="primary">Confirm</Button>
+                    </DialogActions>
+                </Dialog>
         </ThemeProvider>
     );
 };
 
-export default CheckoutModal;
+export default BuyNowModal;
