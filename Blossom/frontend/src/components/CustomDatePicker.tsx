@@ -19,20 +19,22 @@ const CustomDatePicker = <T extends FieldValues>({
     <Controller
       name={id}
       control={control}
-      render={({ field, fieldState }) => (
-        <DatePicker
-          {...props}
-          {...field}
-          slotProps={{
-            textField: {
-              error: Boolean(fieldState.error),
-              helperText: fieldState.error?.message,
-              fullWidth: true,
-              ...textFieldProps,
-            },
-          }}
-        />
-      )}
+      render={({ field, fieldState }) => {
+        return (
+          <DatePicker
+            {...props}
+            {...field}
+            slotProps={{
+              textField: {
+                error: Boolean(fieldState.error),
+                helperText: fieldState.error?.message,
+                fullWidth: true,
+                ...textFieldProps,
+              },
+            }}
+          />
+        );
+      }}
     />
   );
 };
