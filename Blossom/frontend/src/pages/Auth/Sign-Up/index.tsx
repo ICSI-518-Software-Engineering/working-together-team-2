@@ -32,7 +32,13 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ vendor }) => {
       mutate(
         { ...data, isVendor },
         {
-          onSuccess: (d) => signInUser(d),
+          onSuccess: (d) => {
+            if (isVendor) {
+              signInUser(d, "/vendor/overview");
+            } else {
+              signInUser(d);
+            }
+          },
           onError: (e) => {
             if (e instanceof AxiosError) {
               setError("email", { message: e?.response?.data });
