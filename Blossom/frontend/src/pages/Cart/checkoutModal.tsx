@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import * as React from "react";
 import { useState } from "react";
 
-import { createOrders } from "@/api/cartService";
+import { createOrders } from "@/api/cartServices";
 import { CssBaseline, useMediaQuery } from "@mui/material";
 
 interface CheckoutModalProps {
