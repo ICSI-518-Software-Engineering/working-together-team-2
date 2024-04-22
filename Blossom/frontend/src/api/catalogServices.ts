@@ -57,6 +57,10 @@ const createCatalogService = async (data: CatalogItemDataType) => {
   const res = await http.post<string>(`/products`, data);
   return res.data;
 };
+export const createCustomCatalogService = async (data: CatalogItemDataType) => {
+  const res = await http.post<CatalogItemDataType>(`/products`, data);
+  return res.data;
+};
 
 export const useCreateCatalogService = () => {
   return useMutation({

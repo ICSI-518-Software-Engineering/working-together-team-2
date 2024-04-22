@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import { Box, Typography, Button, Modal, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StarIcon from '@mui/icons-material/Star';
@@ -8,7 +7,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { getSignedInUserDetails } from '@/utils/authUtils';
-import { addToCart, buyNow } from '../../api/cartService';
+import { addToCart } from '../../api/cartServices';
+import BuyNowModal from './BuyNowModal'; // Import BuyNowModal
+
 
 // Define the theme for the modal here or import from your themes file
 const modalTheme = createTheme({
@@ -25,6 +26,12 @@ const modalTheme = createTheme({
         fontWeightBold: 700, // Font weight for the rating
     },
 });
+interface ProductModalProps {
+    vendor: Vendor;
+    product: Product;
+    isOpen: boolean;
+    onClose: () => void;
+}
 
 // Define the Product interface to describe the expected structure of props
 interface Product {
@@ -41,12 +48,7 @@ interface Vendor {
     email: string;
 }
 
-interface ProductModalProps {
-    vendor: Vendor;
-    product: Product;
-    isOpen: boolean;
-    onClose: () => void;
-}
+
 function handleError(error: unknown): string {
     if (typeof error === "string") {
         return error;
@@ -60,6 +62,8 @@ function handleError(error: unknown): string {
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, onClose }) => {
     const user = getSignedInUserDetails(); // Using Context to get user details
+    const userId = user?._id? user._id : '';
+    const [buyNowOpen, setBuyNowOpen] = useState(false); // State to manage BuyNowModal
 
     const handleAddToCart = async () => {
         if (!user) {
@@ -78,24 +82,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, on
             alert(`Failed to add product to cart: ${handleError(error)}`);
         }
     };
-
-    const handleBuyNow = async () => {
+    const handleBuyNowClick = () => {
         if (!user) {
-            alert('Please sign in to purchase items.');
+            alert('Please sign in to make a purchase.');
             return;
         }
-        try {
-            await buyNow({
-                userId: user._id,
-                productId: product.id,
-                vendorId: vendor.id,
-                quantity: 1
-            });
-            alert('Purchase successful!');
-        } catch (error) {
-            alert();
-        }
+        setBuyNowOpen(true); // Open the BuyNowModal
     };
+
+    const handleBuyNowClose = () => {
+        setBuyNowOpen(false); // Close the BuyNowModal
+    };
+
     return (
         <ThemeProvider theme={modalTheme}>
             <Modal open={isOpen} onClose={onClose}>
@@ -135,17 +133,24 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, on
                         Add to Cart
                     </Button>
                     <Button
-                        startIcon={<MonetizationOnIcon />}
-                        variant="contained"
-                        color="secondary"
-                        fullWidth
-                        onClick={handleAddToCart}
-                        style={{ marginTop: '10px' }}
-                    >
-                        Buy Now
-                    </Button>
+                    startIcon={<MonetizationOnIcon />}
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                    onClick={handleBuyNowClick}
+                    style={{ marginTop: '10px' }}
+                >
+                    Buy Now
+                </Button>
                 </Box>
             </Modal>
+            <BuyNowModal
+                open={buyNowOpen}
+                onClose={handleBuyNowClose}
+                productId={product.id}
+                vendorId={vendor.id}
+                userId= {userId} // Pass the user ID
+            />
         </ThemeProvider>
     );
 };

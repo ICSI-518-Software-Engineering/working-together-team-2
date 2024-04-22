@@ -10,13 +10,9 @@ import header from '../../assets/header.png';
 import ig from '../../assets/ig.png';
 import wa from '../../assets/wa.png';
 import fb from '../../assets/fb.png';
-import { fetchCart, updateCartItemQuantity, removeCartItem } from 'd:/downloads/Blossom/frontend/src/api/cartService';
+import { fetchCart, updateCartItemQuantity, removeCartItem } from '../../api/cartServices';
 import { getSignedInUserDetails } from '@/utils/authUtils';
 import CheckoutModal from './checkoutModal';
-
-
-
-
 
 const theme = createTheme({
     palette: {
@@ -62,11 +58,11 @@ interface CartItem {
     quantity: number;
 }
 
-interface Cart {
-    user: string;
-    items: CartItem[];
-    modifiedOn: Date;
-}
+// interface Cart {
+//     user: string;
+//     items: CartItem[];
+//     modifiedOn: Date;
+// }
 
 
 const CartPage: React.FC = () => {
@@ -76,6 +72,7 @@ const CartPage: React.FC = () => {
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const openCheckoutModal = () => setIsCheckoutOpen(true);
     const closeCheckoutModal = () => setIsCheckoutOpen(false);
+    
 
     useEffect(() => {
         if (userId) {
