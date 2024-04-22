@@ -13,6 +13,72 @@ import wa from '../../assets/wa.png';
 import fb from '../../assets/fb.png';
 
 
+const theme = createTheme({
+    components: {
+        MuiPaginationItem: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-selected': {
+                        backgroundColor: '#ff8c00', // Selected page number background color
+                        color: 'white', // Selected page number text color
+                    },
+                    '&:hover': {
+                        backgroundColor: '#ffa726', // Hover state background color
+                        color: 'white', // Hover state text color
+                    },
+                    color: 'black', // Default text color
+                },
+            },
+        },
+    },
+});
+
+const ratingTheme = createTheme({
+    palette: {
+        primary: {
+            main: '#333', // Background color for the rating box
+        },
+        text: {
+            primary: '#ffffff', // Text color for the rating box
+        },
+    },
+    typography: {
+        fontSize: 12, // Font size for the rating
+        fontWeightBold: 700, // Font weight for the rating
+    },
+});
+
+
+const occasionTags: Record<Occasion, string[]> = {
+    "Mother's Day": ["roses", "peonies", "orchids", "lilies", "glass vase", "porcelain vase", "hydrangeas", "chrysanthemums", "baby's breath", "lavender"],
+    "Valentine's Day": ["red roses", "pink tulips", "carnations", "lilies", "heart-shaped arrangement", "crystal vase", "white roses", "baby's breath", "peonies", "calla lilies"],
+    "Christmas": ["poinsettias", "holly", "ivy", "fir branches", "red berries", "pinecones", "festive ribbon", "silver vase", "white lilies", "spruce"],
+    "Birthday": ["daisies", "sunflowers", "colorful roses", "balloons", "mixed floral arrangement", "bright vase", "gerberas", "tulips", "snapdragons", "confetti"],
+    "Wedding": ["white roses", "peonies", "lilies", "orchids", "elegant ribbon", "silk flowers", "satin vase", "gardenias", "hydrangeas", "baby's breath"],
+    "Anniversary": ["roses", "orchids", "luxury arrangement", "mixed bouquets", "champagne vase", "peonies", "lilies", "red tulips", "ivory vase", "silk flowers"],
+    "Graduation": ["tulips", "bright gerberas", "roses", "sunflowers", "celebratory ribbon", "modern vase", "daisies", "congratulatory card", "balloons", "snapdragons"],
+    "New Year": ["white lilies", "sparkler features", "silver roses", "black vase", "new beginnings mix", "champagne glasses", "gold ribbon", "orchids", "party decor", "festive garland"],
+    "Easter": ["easter lilies", "tulips", "pastel roses", "spring mix", "bunny decorations", "wicker basket", "hyacinths", "daffodils", "ribbon", "nest features"],
+    "Thanksgiving": ["fall leaves", "chrysanthemums", "pumpkins", "cornucopia arrangement", "berry sprigs", "rustic vase", "autumn-hued ribbons", "sunflowers", "cattails", "harvest mix"]
+};
+
+// Tags for relationships focusing more on the bouquet composition
+const relationshipTags: Record<Relationship, string[]> = {
+    "Mother": ["roses", "tulips", "carnations", "orchids", "peonies", "elegant vase", "nurturing mix", "hydrangeas", "soft colors", "porcelain vase"],
+    "Partner": ["romantic roses", "luxury bouquet", "lilies", "peonies", "passion arrangement", "heart-shaped vase", "red tulips", "crystal vase", "love blooms", "exotic mix"],
+    "Friend": ["bright daisies", "sunflowers", "cheerful mix", "casual vase", "friendship blooms", "gerberas", "fun vase", "colorful snapdragons", "tulips", "lively roses"],
+    "Colleague": ["professional orchids", "minimalist roses", "elegant lilies", "office suitable mix", "modern vase", "subtle colors", "sophisticated arrangement", "greenery", "neutral tones", "sleek design"],
+    "Family": ["family mix", "varied roses", "sunflowers", "lilies", "comfort arrangement", "home vase", "warm colors", "hydrangeas", "family gathering blooms", "festive mix"]
+};
+
+// Define specific types for occasions and relationships
+type Occasion = "Mother's Day" | "Valentine's Day" | "Christmas" | "Birthday" | "Wedding" | "Anniversary" | "Graduation" | "New Year" | "Easter" | "Thanksgiving";
+type Relationship = "Mother" | "Partner" | "Friend" | "Colleague" | "Family";
+
+
+
+
+
 interface Vendor {
     id: string; // Add ID property
     name: string;
