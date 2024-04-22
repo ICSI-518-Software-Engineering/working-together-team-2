@@ -13,6 +13,33 @@ import wa from '../../assets/wa.png';
 import fb from '../../assets/fb.png';
 
 
+interface Vendor {
+    id: string; // Add ID property
+    name: string;
+    email: string;
+}
+
+interface Product {
+    id: string;
+    name: string;
+    price: number;
+    rating: number;
+    imageUrl: string;
+    description: string;
+    tags: string[];
+
+}
+
+interface IOccasionOption {
+    label: string;
+    value: Occasion;
+}
+
+interface IRelationshipOption {
+    label: string;
+    value: Relationship;
+}
+
 const SuggestPage = () => {
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
