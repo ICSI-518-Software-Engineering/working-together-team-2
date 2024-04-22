@@ -3,9 +3,10 @@ import DashboardCreateOrderPage from "@/pages/(Dashboard)/CreateOrder";
 import DashboardOrdersHistoryPage from "@/pages/(Dashboard)/OrdersHistory";
 import DashboardOverviewPage from "@/pages/(Dashboard)/Overview";
 import SignInPage from "@/pages/Auth/Sign-In";
-import SignUpPage from "@/pages/Auth/Sign-Up";
+import SignUpPage from "@/pages/Auth/Sign-Up" ;
 import StorePage from "@/pages/Store";
 import CatalogPage from "@/pages/Catalog";
+import CartPage from "@/pages/Cart";
 import CustomizePage from "@/pages/Customize";
 
 
@@ -97,15 +98,15 @@ const AppRoutes: React.FC = () => {
         },
         {
           path: "cart",
-          element: <CatalogPage />,
+          element: <CartPage />,
         },
         {
           path: "checkout",
-          element: <CatalogPage />,
+          element: <CartPage />,
         },
         {
           path: "orders",
-          element: <CatalogPage />,
+          element: <CartPage />,
         },
         {
           path: "customize",

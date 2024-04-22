@@ -33,7 +33,7 @@ const ProductsDisplay: React.FC<ProductsDisplayProps> = ({
       direction="row"
       flexWrap="wrap"
       gap="2rem"
-      justifyContent={{ xs: "start", lg: "space-between" }}
+      justifyContent={{ xs: "start" }}
     >
       {products?.map?.((product) => (
         <Product
@@ -85,7 +85,12 @@ const Product: React.FC<ProductProps> = ({
           <Typography fontSize="1.5rem" noWrap title={product.name}>
             {product.name}
           </Typography>
-          <Typography color="gray" height="3rem" sx={lineClamp()}>
+          <Typography
+            color="gray"
+            height="3rem"
+            sx={lineClamp()}
+            title={product.description}
+          >
             {product.description}
           </Typography>
           <Typography fontSize="1.25rem">

@@ -65,4 +65,14 @@ userRouter.post("/sign-up", async (req, res) => {
   }
 });
 
+userRouter.get("/vendors", async (req, res) => {
+  try {
+    const vendors = await UserModel.find({ isVendor: true });
+    return res.json(vendors);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Server Error");
+  }
+});
+
 export default userRouter;

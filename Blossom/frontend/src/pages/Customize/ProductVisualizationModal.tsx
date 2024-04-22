@@ -6,6 +6,8 @@ interface ProductVisualizationModalProps {
     open: boolean;
     onClose: () => void;
     selectedProductsText: string;
+    onImageUrlChange: (url: string | null) => void;  // Add this prop
+
 }
 
 // Add theme to the styled component
@@ -37,34 +39,42 @@ const Image = styled('img')({
     borderRadius: '8px',
 });
 
-const ProductVisualizationModal: React.FC<ProductVisualizationModalProps> = ({ open, onClose, selectedProductsText }) => {
+const ProductVisualizationModal: React.FC<ProductVisualizationModalProps> = ({ open, onClose, selectedProductsText, onImageUrlChange }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    
 
     useEffect(() => {
         const generateImage = async () => {
             setLoading(true);
+            setImageUrl(null);
             try {
                 // Perform API call to generate the image based on selected products
                 // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
-                const response = await fetch('https://api.openai.com/v1/images/generations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer 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',
-                    },
-                    body: JSON.stringify({
-                        model: "dall-e-2",
-                        prompt: selectedProductsText,
-                        n: 1,
-                        size: "1024x1024"
-                    }),
-                });
-                const data = await response.json();
-                setImageUrl(data.data[0].url); // Access the url from the response correctly
+                // const response = await fetch('https://api.openai.com/v1/imagadfes/generations', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'Authorization': 'Bearer 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',
+                //     },
+                //     body: JSON.stringify({
+                //         model: "dall-e-2",
+                //         prompt: selectedProductsText,
+                //         n: 1,
+                //         size: "1024x1024"
+                //     }),
+                // });
+                // const data = await response.json();
+                
+                const url=`https://image.pollinations.ai/prompt/${selectedProductsText}`;
+                setImageUrl(url);
+                 // Access the url from the response correctly
+                 onImageUrlChange(url);  // Add this prop
+
             } catch (error) {
                 console.error('Error generating image:', error);
                 setImageUrl(null);
+                onImageUrlChange(null);
             } finally {
                 setLoading(false);
             }
@@ -73,7 +83,7 @@ const ProductVisualizationModal: React.FC<ProductVisualizationModalProps> = ({ o
         if (open && selectedProductsText) {
             generateImage();
         }
-    }, [open, selectedProductsText]);
+    }, [open, selectedProductsText, onImageUrlChange]);
 
     return (
         <Modal open={open} onClose={onClose}>

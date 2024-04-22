@@ -15,6 +15,7 @@ export type UseProductsStoreProps = {
     quantity: number
   ) => void;
   deleteFromCart: (product: GetCatalogServiceRecordType) => void;
+  resetCart: () => unknown;
 };
 
 const useProductsStore = create<UseProductsStoreProps>()(
@@ -52,6 +53,10 @@ const useProductsStore = create<UseProductsStoreProps>()(
             cart: prevCart,
           };
         });
+      },
+
+      resetCart: () => {
+        set(() => ({ cart: {} }));
       },
     }),
     {

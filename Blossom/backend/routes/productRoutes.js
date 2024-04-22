@@ -6,6 +6,35 @@ import ProductModel, {
 
 const productRouter = Router();
 
+productRouter.get("/in-stock", async (req, res) => {
+  try {
+    // Query for products that are in stock (stockInNumber > 0)
+    const inStockProducts = await ProductModel.find({
+      stockInNumber: { $gt: 0 },
+      type: "FlowerAndVase"
+    }).sort({ updatedAt: -1 });
+
+    return res.json(inStockProducts);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Something unexpected happened!!");
+  }
+});
+productRouter.get("/in-stock-all", async (req, res) => {
+  try {
+    const inStockProducts = await ProductModel.find({
+      $and: [
+        { stockInNumber: { $gt: 0 } },
+        { $or: [{ type: "Flower" }, { type: "Vase" }] }
+      ]
+    }).sort({ updatedAt: -1 });
+
+    return res.json(inStockProducts);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Something unexpected happened!!");
+  }
+});
 productRouter.get("/:productId?", async (req, res) => {
   try {
     const { productId } = req.params;
@@ -34,8 +63,8 @@ productRouter.post("/", async (req, res) => {
     const product = validateNewProductRequest(req.body);
 
     const newProduct = new ProductModel(product);
-    await newProduct.save();
-    return res.send("Product saved successfully");
+    const prod = await newProduct.save();
+    return res.send(prod);
   } catch (error) {
     sendErrorResponse(error, res);
   }
@@ -60,5 +89,8 @@ productRouter.delete("/:productId", async (req, res) => {
     sendErrorResponse(error, res);
   }
 });
+
+
+
 
 export default productRouter;

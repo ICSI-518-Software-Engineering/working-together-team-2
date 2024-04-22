@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { z } from "zod";
 
-const productTypes = ["Flower", "Vase", "FlowerAndVase"];
+const productTypes = ["Flower", "Vase", "FlowerAndVase", "Custom"];
 
 export const ProductMongooseSchema = new Schema(
   {

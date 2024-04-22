@@ -56,6 +56,7 @@ interface Vendor {
 }
 
 interface Product {
+    id: string;
     name: string;
     price: number;
     rating: number;
@@ -119,22 +120,51 @@ interface Product {
 // };
 const productsPerPage = 12;
 const CatalogPage = () => {
-    const [selectedVendor, setSelectedVendor] = React.useState<Vendor | null>(null);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
+    const [priceFilter, setPriceFilter] = useState<string[]>([]);
+    const [ingredientFilter, setIngredientFilter] = useState<string[]>([]);
+    // Filter products based on price
+
 
     // Function to handle opening modal
-    const handleOpenModal = (product: Product) => {
+    const handleOpenModal = (product: Product,vendor:Vendor) => {
+        console.log(product.id);
+
+        setSelectedVendor(vendor);
         setSelectedProduct(product);
         setModalOpen(true);
     };
     const [page, setPage] = useState(1);
+
+    const applyFilters = () => {
+        return products
+            .filter(product => priceFilter.length === 0 || priceFilter.some(range => {
+                const [min, max] = range.split('-').map(Number);
+                return product.price >= min && product.price <= max;
+            }))
+            .filter(product => ingredientFilter.length === 0 || ingredientFilter.some(ingredient => product.description.toLowerCase().includes(ingredient.toLowerCase())));
+    };
+    const handlePriceFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { checked, value } = event.target;
+        setPriceFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
+    };
+
+    const handleIngredientFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { checked, value } = event.target;
+        setIngredientFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
+    };
+
+
+    const filteredProducts = applyFilters();
     const totalProducts = selectedVendor ? products.length : 0;
     const totalPages = Math.ceil(totalProducts / productsPerPage);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        event;
         setPage(value);
     };
     useEffect(() => {
@@ -161,10 +191,12 @@ const CatalogPage = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = (vendorId: string) => {
+        vendorId;
         fetch(`http://localhost:8086/api/products/in-stock`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
+                    id: data._id,
                     name: data.name,
                     price: data.price,
                     rating: data.rating || 5,
@@ -189,22 +221,23 @@ const CatalogPage = () => {
         <>
             <div style={{ display: 'flex', backgroundColor: 'white', minHeight: '100vh' }}>
                 {/* Sidebar */}
+                {/* Filters Section */}
                 <div style={{ width: '250px', padding: '20px', backgroundColor: '#f4f4f4', color: 'black' }}>
                     <Typography variant="h6" style={{ marginBottom: '10px' }}>Filters</Typography>
                     {/* Price Filter */}
                     <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Price</Typography>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox />} label="0-50" />
-                        <FormControlLabel control={<Checkbox />} label="50-100" />
+                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="0-50" />} label="0-50" />
+                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="50-100" />} label="50-100" />
                         {/* Add more price ranges */}
                     </FormGroup>
 
                     {/* Ingredient Filter */}
                     <Typography variant="subtitle1" style={{ margin: '20px 0' }}>Ingredients</Typography>
                     <FormGroup>
+                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Roses" />} label="Roses" />
+                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Sunflowers" />} label="Sunflowers" />
                         {/* Add checkboxes for each ingredient */}
-                        <FormControlLabel control={<Checkbox />} label="Roses" />
-                        <FormControlLabel control={<Checkbox />} label="Sunflowes" />
                     </FormGroup>
                 </div>
 
@@ -232,6 +265,7 @@ const CatalogPage = () => {
                                 )}
                                 value={selectedVendor}
                                 onChange={(event: any, newVendor: Vendor | null) => {
+                                    event;
                                     setSelectedVendor(newVendor);
                                     setPage(1);
                                 }}
@@ -255,11 +289,11 @@ const CatalogPage = () => {
                     </Box>
                     {selectedVendor && (
                         <Grid container spacing={2} style={{ marginTop: theme.spacing(2) }}>
-                            {products
+                            {filteredProducts
                                 .sort((a, b) => b.rating - a.rating) // Sort products by rating in descending order
                                 .slice((page - 1) * productsPerPage, page * productsPerPage) // Pagination logic
                                 .map((product, index) => (
-                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product)}>
+                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product, selectedVendor)}>
                                         <Box textAlign="center" p={2} boxShadow={2} borderRadius={2} position="relative">
                                             {/* Rating displayed in top right corner */}
                                             <ThemeProvider theme={ratingTheme}>
@@ -319,9 +353,10 @@ const CatalogPage = () => {
                     {/* Additional content can go here */}
 
                     {/* Modal for displaying product details */}
-                    {selectedProduct && (
+                    {selectedProduct && selectedVendor && (
                         <ProductModal
                             product={selectedProduct}
+                            vendor={selectedVendor}
                             isOpen={modalOpen}
                             onClose={handleCloseModal}
                         />

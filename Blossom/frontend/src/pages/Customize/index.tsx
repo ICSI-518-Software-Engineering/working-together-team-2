@@ -8,6 +8,10 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { AppBar, Box, Button, Autocomplete, createTheme, CssBaseline, FormControl, TextField, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ProductVisualizationModal from './ProductVisualizationModal';
+import { CatalogItemDataType } from "../(Dashboard)/Catalog/typesAndData";
+import { addToCart } from '../../api/cartServices';
+import { createCustomCatalogService } from '../../api/catalogServices';
+import { getSignedInUserDetails } from '@/utils/authUtils';
 
 // Theme Configuration
 const theme = createTheme({
@@ -59,12 +63,16 @@ const CustomizePage: React.FC = () => {
     const [selectedVase, setSelectedVase] = useState<Product | null>(null);
     const [filteredVases, setFilteredVases] = useState<Product[]>([]);
     const [selectedVendor, setSelectedVendor] = React.useState<Vendor | null>(null);
-    const [selectedFlower, setSelectedFlower] = useState<Product | null>(null);
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+    const handleImageUrlChange = (newImageUrl: string | null) => {
+        setImageUrl(newImageUrl);
+    };
+
     const [flowerSelections, setFlowerSelections] = useState<{ flower: Product | null, quantity: number }[]>([{ flower: null, quantity: 1 }]);
-
-
+    
 
     useEffect(() => {
         // Fetch vendors from API
@@ -85,11 +93,11 @@ const CustomizePage: React.FC = () => {
 
     useEffect(() => {
         if (selectedVendor) {
-            fetchProductsByVendor(selectedVendor.id);
+            fetchProductsByVendor();
         }
     }, [selectedVendor]);
 
-    const fetchProductsByVendor = (vendorId: string) => {
+    const fetchProductsByVendor = () => {
         fetch(`http://localhost:8086/api/products/in-stock-all`)
             .then(response => response.json())
             .then((responseData: any[]) => {
@@ -116,21 +124,27 @@ const CustomizePage: React.FC = () => {
         // Iterate over flower selections
         flowerSelections.forEach(selection => {
             if (selection.flower) {
-                parts.push(`${selection.quantity} ${selection.flower.name}s`);
+                // Include only the flower name, ensuring it is pluralized correctly
+                const flowerName = selection.flower.name.toLowerCase();
+                const pluralFlowerName = flowerName.endsWith('s') ? flowerName : `${flowerName}s`;
+                parts.push(pluralFlowerName);
             }
         });
 
-        // Construct the final text
-        let text = 'Generate a Single realistic image of  product visualization of';
-        text += parts.join(', ');
+        // Construct the final text for the product visualization prompt
+        let text = 'Generate a single realistic image of a product visualization of';
+        if (parts.length > 0) {
+            text += ` ${parts.join(', ')}`;
+        }
 
         // Add selected vase if it exists
         if (selectedVase) {
-            text += ` in a ${selectedVase.name} vase`;
+            text += ` in a ${selectedVase.name.toLowerCase()} vase`;
         }
 
         return text;
     };
+
 
 
     const [showModal, setShowModal] = useState(false);
@@ -145,6 +159,7 @@ const CustomizePage: React.FC = () => {
         } else {
             setFilteredFlowers([]);
             setFilteredVases([]);
+            filteredVases;
         }
     }, [vendor]);
 
@@ -167,23 +182,15 @@ const CustomizePage: React.FC = () => {
         setFlowerSelections(newSelections);
     };
 
-    const handleQuantityChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newQuantity = parseInt(event.target.value, 10);
 
-        // Check if the new quantity is a number and greater than or equal to 0
-        if (!isNaN(newQuantity) && newQuantity >= 0) {
-            const newSelections = [...flowerSelections];
-            newSelections[index].quantity = newQuantity;
-            setFlowerSelections(newSelections);
-        }
-    };
 
     const handleVaseChange = (event: any, value: Product | null) => {
+        event;
         setSelectedVase(value);
     };
 
     const calculateOrderTotal = () => {
-        let total = flowerSelections.reduce((acc, selection) => acc + (selection.flower ? selection.flower.price * selection.quantity : 0), 0);
+        let total = flowerSelections.reduce((acc, selection) => acc + (selection.flower ? selection.flower.price * 15 : 0), 0);
 
         if (selectedVase) {
             total += selectedVase.price;
@@ -192,9 +199,48 @@ const CustomizePage: React.FC = () => {
         return total;
     };
 
-    const handleAddToCart = () => {
-        // Implement add to cart logic here
+    const handleAddToCart = async () => {
+        if (!selectedVendor || flowerSelections.length === 0) {
+            console.error('Vendor not selected or no flowers selected');
+            return;
+        }
+
+        setVendor(selectedVendor.email);
+        const customProductName = "Customized Product";
+        const description = generateSelectedProductsText();
+        const tags = flowerSelections.map(selection => selection.flower?.name).filter((name): name is string => !!name);
+        const totalPrice = calculateOrderTotal();
+
+        const customProductData: CatalogItemDataType = {
+            name: customProductName,
+            description,
+            price: totalPrice,
+            tags,
+            type: "Custom",
+            stockInNumber: 100,
+            image: imageUrl? imageUrl:''  // Add image blob here
+        };
+
+        try {
+            const createdProduct = await createCustomCatalogService(customProductData);
+            const productId = createdProduct._id ? createdProduct._id : '';
+            const user = getSignedInUserDetails();
+            const userId = user?._id ? user._id : '';
+            await addToCart({
+                userId: userId,
+                productId,
+                vendorId: selectedVendor.id,
+                quantity: 1
+            });
+            alert('Product added to cart!');
+            console.log('Product added to cart successfully');
+            location.reload();
+        } catch (error) {
+            alert('Error occure while adding to cart!');
+            console.error('Error handling add to cart:', error);
+        }
     };
+
 
     const handleBuyNow = () => {
         // Implement visualize logic here (e.g., opening a modal)
@@ -256,6 +302,7 @@ const CustomizePage: React.FC = () => {
                             getOptionLabel={(option) => option.name}
                             value={selectedVendor}
                             onChange={(event: any, newVendor: Vendor | null) => {
+                                event;
                                 setSelectedVendor(newVendor);
 
                             }}
@@ -318,15 +365,16 @@ const CustomizePage: React.FC = () => {
                                 )}
                             />
                             <TextField
-                                label="Quantity"
-                                type="number"
-                                value={selection.quantity}
-                                onChange={handleQuantityChange(index)}
-
-                                sx={{ width: '80px', '& .MuiOutlinedInput-root': { borderColor: 'blue' } }}
+                                label="Price"
+                                value={selection.flower?.price ? selection.flower?.price * 15 : 0}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                sx={{ width: '100px', ml: 2, '& .MuiOutlinedInput-root': { borderColor: 'blue' } }}
                             />
                         </Box>
                     ))}
+
                     <Button startIcon={<AddIcon />} onClick={handleAddFlower} sx={{ my: 2 }}>
                         Add More Flowers
                     </Button>
@@ -371,9 +419,12 @@ const CustomizePage: React.FC = () => {
                     <Button startIcon={<ShoppingCartIcon />} variant="contained" color="primary" onClick={handleAddToCart} sx={{ mt: 2 }}>Add to Cart</Button>
                     <Button startIcon={<MonetizationOnIcon />} variant="contained" color="secondary" onClick={handleBuyNow} sx={{ mt: 2 }}>Buy Now</Button>
                     <Button variant="outlined" color="secondary" onClick={handleVisualizeClick} sx={{ mt: 2 }}>Visualize</Button>
-                    <ProductVisualizationModal open={showModal} onClose={() => setShowModal(false)} selectedProductsText={generateSelectedProductsText()} />
-
-
+                    <ProductVisualizationModal
+                        open={showModal}
+                        onClose={() => setShowModal(false)}
+                        selectedProductsText={generateSelectedProductsText()}
+                        onImageUrlChange={handleImageUrlChange} // Pass the function as a prop
+                    />
 
                 </Box>
                 {/* Footer */}
