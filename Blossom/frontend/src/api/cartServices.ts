@@ -30,11 +30,14 @@ export const createOrders = async (userId: string, details: CustomerDetails) => 
 // Function to add product to cart
 export const addToCart = async (params: AddToCartParams): Promise<void> => {
   try {
-    const response = await axios.post('http://localhost:8086/api/cart/update-cart', params);
-    console.log('Product added to cart:', response.data);
+    const response = await axios.post(
+      "http://localhost:8086/api/cart/update-cart",
+      params
+    );
+    console.log("Product added to cart:", response.data);
   } catch (error) {
-    console.error('Error adding product to cart:', error);
-    throw new Error('Failed to add product to cart');
+    console.error("Error adding product to cart:", error);
+    throw new Error("Failed to add product to cart");
   }
 };
 
@@ -55,6 +58,7 @@ export const buyNow = async (userId: string, productId: string, vendorId: string
 };
 
 
+// Update to your API's base URL
 // Update to your API's base URL
 
 export const fetchCart = async (userId: string) => {
