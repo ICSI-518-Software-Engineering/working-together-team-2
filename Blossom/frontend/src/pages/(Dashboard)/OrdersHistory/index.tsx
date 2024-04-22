@@ -8,12 +8,25 @@ import DataGrid from "@/components/DataGrid";
 import { formatPrice } from "@/lib/utils";
 import {
   Button,
+import { LabelValueType } from "@/lib/constants";
+import { formatPrice } from "@/lib/utils";
+import {
+  Button,
+  Divider,
   Drawer,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
 import { MRT_ColumnDef } from "material-react-table";
 import React, { useMemo, useState } from "react";
 import DashboardLayout from "..";
@@ -56,6 +69,7 @@ const DashboardOrdersHistoryPage: React.FC = () => {
         {
           accessorKey: "deliveryDate",
           header: "Delivery Date",
+          accessorFn: (item) => dayjs(item.deliveryDate).format(DATE_FORMAT),
         },
         {
           accessorKey: "price",
@@ -103,6 +117,56 @@ const DashboardOrdersHistoryPage: React.FC = () => {
     [isPending, updateOrder]
   );
 
+  /**
+   * ============ Delivery Details =============
+   */
+
+  const deliveryDetails: LabelValueType[] = useMemo(
+    () => [
+      {
+        label: "Order Status",
+        value: selectedOrder?.status ?? "--",
+      },
+      {
+        label: "Delivery Type",
+        value: selectedOrder?.deliveryType ?? "--",
+      },
+      {
+        label: "Delivery Date",
+        value: dayjs(selectedOrder?.deliveryDate).format(DATE_FORMAT) ?? "--",
+      },
+      {
+        label: "Name",
+        value: selectedOrder?.customerDetails?.name ?? "--",
+      },
+      {
+        label: "Email",
+        value: selectedOrder?.customerDetails?.email ?? "--",
+      },
+      {
+        label: "Phone Number",
+        value: selectedOrder?.customerDetails?.phone ?? "--",
+      },
+      {
+        label: "Address",
+        value: selectedOrder?.customerDetails?.address ?? "--",
+      },
+      {
+        label: "City",
+        value: selectedOrder?.customerDetails?.city ?? "--",
+      },
+      {
+        label: "State",
+        value: selectedOrder?.customerDetails?.state ?? "--",
+      },
+      {
+        label: "Zip",
+        value: selectedOrder?.customerDetails?.zip ?? "--",
+      },
+    ],
+    [selectedOrder]
+  );
+
   return (
     <DashboardLayout>
       <DataGrid
@@ -131,6 +195,24 @@ const DashboardOrdersHistoryPage: React.FC = () => {
             preview
             cartProducts={selectedOrder?.products ?? []}
           />
+          <Divider />
+
+          {/* Address Details */}
+          <Typography variant="h6" fontWeight="bold">
+            Delivery Details
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                {deliveryDetails.map((d) => (
+                  <TableRow key={d.label}>
+                    <TableCell variant="head">{d.label}</TableCell>
+                    <TableCell>{d.value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Stack>
       </Drawer>
     </DashboardLayout>
@@ -138,3 +220,5 @@ const DashboardOrdersHistoryPage: React.FC = () => {
 };
 
 export default DashboardOrdersHistoryPage;
+
+const DATE_FORMAT = "DD-MMM-YYYY";

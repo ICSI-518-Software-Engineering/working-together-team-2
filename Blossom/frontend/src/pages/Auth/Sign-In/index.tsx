@@ -28,6 +28,11 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
     (data: SignInSchemaType) => {
       mutate(data, {
         onSuccess: (d) => {
+          if (vendor) {
+            signInUser(d, "/vendor/overview");
+          } else {
+            signInUser(d);
+          }
           const user = decodeJWT(d);
           if (!user) return;
 
@@ -40,7 +45,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
         },
       });
     },
-    [mutate, setError]
+    [mutate, setError, vendor]
   );
 
   return (
