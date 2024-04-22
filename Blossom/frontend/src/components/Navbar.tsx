@@ -10,13 +10,6 @@ import {
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import UserMenu from "./UserMenu";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-type NavLinkItem = {
-  url: string;
-  label: string;
-  icon?: React.ReactNode; // 'icon' is optional
-};
 
 const Navbar: React.FC = () => {
   return (
@@ -59,7 +52,7 @@ const NavLinks: React.FC = () => {
   const user = getSignedInUserDetails();
 
   // If not signed in
-  let navLinks: NavLinkItem[] = [
+  let navLinks = [
     {
       url: "/auth/customer",
       label: "Customer",
@@ -82,24 +75,7 @@ const NavLinks: React.FC = () => {
 
   // If Signed In & Is Customer
   if (user && !user.isVendor) {
-    navLinks = [
-      {
-        url: "/customer/store",
-        label: "Store",
-        icon: null,
-      },
-      {
-        url: "/customer/cart",
-        label: "Cart",
-        icon: <ShoppingCartIcon />, // Icon for the cart
-      },
-      {
-        url: "/customer/orders",
-        label: "Orders",
-        icon: <ListAltIcon />, // Icon for the orders
-      },
-
-    ];
+    navLinks = [];
   }
 
   return (
@@ -111,7 +87,6 @@ const NavLinks: React.FC = () => {
             component={NavLink}
             to={navlink.url}
             color="secondary"
-            startIcon={navlink.icon} // Add the icon to the button
             variant={
               pathname?.startsWith(navlink.url) ? "contained" : "outlined"
             }
@@ -120,7 +95,6 @@ const NavLinks: React.FC = () => {
           </Button>
         ))}
       </ButtonGroup>
-
 
       {/* User Menu */}
       {user && <UserMenu user={user} />}

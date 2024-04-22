@@ -21,10 +21,6 @@ export const OrderMongooseSchema = new Schema({
       type: String,
       required: true,
     },
-    id: {
-      type: String,
-      required: false,
-    },
     email: {
       type: String,
       required: true,
@@ -32,7 +28,6 @@ export const OrderMongooseSchema = new Schema({
     phone: {
       type: String,
       required: true,
-      required: false,
     },
     address: String,
     city: String,

@@ -65,35 +65,4 @@ userRouter.post("/sign-up", async (req, res) => {
   }
 });
 
-productRouter.get("/in-stock", async (req, res) => {
-  try {
-    // Query for products that are in stock (stockInNumber > 0)
-    const inStockProducts = await ProductModel.find({
-      stockInNumber: { $gt: 0 },
-      type: "FlowerAndVase"
-    }).sort({ updatedAt: -1 });
-
-    return res.json(inStockProducts);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Something unexpected happened!!");
-  }
-});
-
-productRouter.get("/in-stock-all", async (req, res) => {
-  try {
-    const inStockProducts = await ProductModel.find({
-      $and: [
-        { stockInNumber: { $gt: 0 } },
-        { $or: [{ type: "Flower" }, { type: "Vase" }] }
-      ]
-    }).sort({ updatedAt: -1 });
-
-    return res.json(inStockProducts);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Something unexpected happened!!");
-  }
-});
-
 export default userRouter;

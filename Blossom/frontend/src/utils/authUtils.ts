@@ -17,18 +17,12 @@ export const signOutUser = () => {
   window.location.href = "/";
 };
 
-export const decodeJWT = (jwt: string) => {
-  if (!jwt) return null;
+export const getSignedInUserDetails = () => {
   try {
-    return jwtDecode<UserSessionType>(jwt);
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) return null;
+    return jwtDecode<UserSessionType>(token);
   } catch (error) {
     return null;
   }
-
-}
-
-export const getSignedInUserDetails = () => {
-  const token = localStorage.getItem(AUTH_TOKEN_KEY);
-  if (!token) return null;
-  return decodeJWT(token);
 };
