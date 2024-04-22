@@ -3,8 +3,12 @@ import { jwtDecode } from "jwt-decode";
 
 const AUTH_TOKEN_KEY = "auth_token";
 
-export const signInUser = (token: string) => {
+export const signInUser = (token: string, redirectURL?: string) => {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
+
+  if (redirectURL) {
+    return (window.location.href = redirectURL);
+  }
   window.location.reload();
 };
 
