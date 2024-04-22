@@ -77,6 +77,24 @@ type Relationship = "Mother" | "Partner" | "Friend" | "Colleague" | "Family";
 
 
 
+function recommendProducts(occasion: Occasion | null, relationship: Relationship | null, products: Product[] | null): Product[] | null {
+    if (occasion && relationship && products) {
+        const productsScores = products.map(product => {
+            let score = 0;
+            const tags = [...occasionTags[occasion], ...relationshipTags[relationship]];
+            tags.forEach(tag => {
+                if (product.tags.includes(tag)) score += 10;
+                if (product.description.toLowerCase().includes(tag.toLowerCase())) score += 5;
+            });
+            return { ...product, score };
+        });
+
+        // Sort by score and return the top matching products
+        return productsScores.filter(p => p.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+    return products;
+
+}
 
 
 interface Vendor {
