@@ -1,6 +1,13 @@
 import { UserSessionType } from "@/pages/Auth/typesAndData";
 import { signOutUser } from "@/utils/authUtils";
-import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import React, { useCallback } from "react";
 
 type UserMenuProps = {
@@ -38,6 +45,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
           "aria-labelledby": "user-menu",
         }}
       >
+        <MenuItem divider sx={{ textTransform: "capitalize" }}>
+          <Typography fontWeight="bold">Hi, {user.name}</Typography>
+        </MenuItem>
         {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem> */}
         <MenuItem
