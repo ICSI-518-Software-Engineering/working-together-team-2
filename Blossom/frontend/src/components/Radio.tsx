@@ -17,6 +17,7 @@ type RadioProps<T extends FieldValues> = {
   label?: string;
   options: LabelValueType[];
   radioProps?: MUIRadioProps;
+  required?: boolean;
 } & RadioGroupProps;
 
 const Radio = <T extends FieldValues>({
@@ -24,6 +25,8 @@ const Radio = <T extends FieldValues>({
   control,
   id,
   label,
+  radioProps,
+  required,
   ...props
 }: RadioProps<T>) => {
   return (
@@ -32,8 +35,9 @@ const Radio = <T extends FieldValues>({
       control={control}
       render={({ field, fieldState }) => (
         <FormControl
-          size={props.radioProps?.size}
+          size={radioProps?.size}
           error={Boolean(fieldState.error)}
+          required={required}
         >
           {label && <FormLabel id={id + "label"}>{label}</FormLabel>}
           <RadioGroup aria-labelledby={id + "label"} {...props} {...field}>
@@ -41,7 +45,7 @@ const Radio = <T extends FieldValues>({
               <FormControlLabel
                 key={option.value}
                 value={option.value}
-                control={<MUIRadio {...props.radioProps} />}
+                control={<MUIRadio {...radioProps} />}
                 label={option.label}
               />
             ))}

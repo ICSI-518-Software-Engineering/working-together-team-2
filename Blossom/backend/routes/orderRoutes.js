@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { sendErrorResponse } from "../lib/utils.js";
 import OrderModel from "../models/OrderModel.js";
+import ProductModel from "../models/ProductModel.js";
 import UserModel from "../models/UserModel.js";
-import ProductModel  from "../models/ProductModel.js";
 
 const orderRouter = Router();
 
@@ -24,6 +24,18 @@ orderRouter.post("/", async (req, res) => {
       })),
       status: "Pending",
     });
+
+    const productUpdates = [];
+    cartData.forEach((item) => {
+      productUpdates.push(
+        ProductModel.findByIdAndUpdate(item.product._id, {
+          $inc: { stockInNumber: -item.quantity },
+        })
+      );
+    });
+
+    await Promise.all(productUpdates);
+
     return res.json(newOrder);
   } catch (error) {
     return sendErrorResponse(error, res);

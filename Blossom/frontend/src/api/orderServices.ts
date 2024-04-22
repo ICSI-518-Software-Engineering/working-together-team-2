@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http, queryClient } from "@/lib/http";
 import { CartItemType } from "@/pages/(Dashboard)/CreateOrder/productsStore";
 import { CreateOrderFormDataType } from "@/pages/(Dashboard)/CreateOrder/typesAndData";
 import { getSignedInUserDetails } from "@/utils/authUtils";
@@ -77,5 +77,6 @@ const updateOrdersHistoryService = async (
 export const useUpdateOrdersHistoryService = () => {
   return useMutation({
     mutationFn: updateOrdersHistoryService,
+    onSuccess: () => queryClient.invalidateQueries(),
   });
 };
