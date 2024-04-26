@@ -16,7 +16,10 @@ userRouter.post("/login", async (req, res) => {
 
     const { email, password } = clientReq;
 
-    const existingUser = await UserModel.findOne({ email });
+    const existingUser = await UserModel.findOne({
+      email,
+      isVendor: req.body.isVendor ?? false,
+    });
 
     if (!existingUser) {
       return res.status(404).send("User not found.");

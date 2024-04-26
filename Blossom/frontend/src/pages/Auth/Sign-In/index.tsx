@@ -26,20 +26,23 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
 
   const handleLogin = useCallback(
     (data: SignInSchemaType) => {
-      mutate(data, {
-        onSuccess: (d) => {
-          if (vendor) {
-            signInUser(d, "/vendor/overview");
-          } else {
-            signInUser(d);
-          }
-        },
-        onError: (e) => {
-          if (e instanceof AxiosError) {
-            setError("email", { message: e?.response?.data });
-          }
-        },
-      });
+      mutate(
+        { ...data, isVendor: vendor },
+        {
+          onSuccess: (d) => {
+            if (vendor) {
+              signInUser(d, "/vendor/overview");
+            } else {
+              signInUser(d);
+            }
+          },
+          onError: (e) => {
+            if (e instanceof AxiosError) {
+              setError("email", { message: e?.response?.data });
+            }
+          },
+        }
+      );
     },
     [mutate, setError, vendor]
   );

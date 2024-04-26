@@ -248,6 +248,7 @@ const DashboardCreateOrderPage: React.FC = () => {
               variant="outlined"
               onClick={() => setIsConfirmDialogOpen(true)}
               disabled={Object.keys(cart ?? {})?.length === 0}
+              color="secondary"
             >
               Proceed to payment
             </Button>

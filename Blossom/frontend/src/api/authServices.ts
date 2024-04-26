@@ -5,7 +5,10 @@ import { useMutation } from "@tanstack/react-query";
 /**
  * Login Service
  */
-const loginService = async (data: SignInSchemaType) => {
+export type LoginServiceDataType = {
+  isVendor?: boolean;
+} & SignInSchemaType;
+const loginService = async (data: LoginServiceDataType) => {
   const res = await http.post<string>("/auth/login", data);
   return res.data;
 };
