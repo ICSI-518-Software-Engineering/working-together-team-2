@@ -23,7 +23,11 @@ import {
 import React, { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProductsDisplay from "./ProductsDisplay";
-import { ProductSearchType, productTypeOptions } from "./typesAndData";
+import {
+  ProductSearchType,
+  collaborativeFilter,
+  productTypeOptions,
+} from "./typesAndData";
 
 type AddProductsDialogProps = CustomDialogBaseProps;
 
@@ -36,7 +40,8 @@ const AddProductsDialog: React.FC<AddProductsDialogProps> = (props) => {
   const [productType, setProductType] = useState<ProductSearchType>(
     productTypeOptions[0].value
   );
-  const customSearchRef = useRef<HTMLInputElement | null>(null);
+  const customSearchFlowerRef = useRef<HTMLInputElement | null>(null);
+  const customSearchVaseRef = useRef<HTMLInputElement | null>(null);
   const [displayImage, setDisplayImage] = useState<boolean>(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState<boolean>(false);
 
@@ -44,33 +49,35 @@ const AddProductsDialog: React.FC<AddProductsDialogProps> = (props) => {
     if (!searchString) return catalogItems;
 
     // if (productType === "catalog") {
-    return catalogItems.filter((item) => {
-      const token = searchString?.toLowerCase();
-      let flag = false;
-      flag =
-        flag ||
-        item?.name?.toLowerCase?.().includes?.(token) ||
-        token?.includes(item?.name?.toLowerCase?.());
-      flag = flag || item?.description?.toLowerCase?.().includes?.(token);
-      flag =
-        flag ||
-        item?.tags?.some(
-          (t) =>
-            t.toLowerCase().includes(token) || token.includes(t.toLowerCase())
-        );
-      flag =
-        flag ||
-        item.type?.toLowerCase?.().includes(token) ||
-        token.includes(item.type?.toLowerCase?.());
-      return flag;
-    });
+    // return catalogItems.filter((item) => {
+    //   const token = searchString?.toLowerCase();
+    //   let flag = false;
+    //   flag =
+    //     flag ||
+    //     item?.name?.toLowerCase?.().includes?.(token) ||
+    //     token?.includes(item?.name?.toLowerCase?.());
+    //   flag = flag || item?.description?.toLowerCase?.().includes?.(token);
+    //   flag =
+    //     flag ||
+    //     item?.tags?.some(
+    //       (t) =>
+    //         t.toLowerCase().includes(token) || token.includes(t.toLowerCase())
+    //     );
+    //   flag =
+    //     flag ||
+    //     item.type?.toLowerCase?.().includes(token) ||
+    //     token.includes(item.type?.toLowerCase?.());
+    //   return flag;
+    // });
     // }
 
     // // If it is custom search
-    // return catalogItems.filter((item) =>
-    //   collaborativeFilter(item, searchString)
-    // );
+    return catalogItems.filter((item) =>
+      collaborativeFilter(item, searchString)
+    );
   }, [catalogItems, searchString]);
+
+  console.log(customSearchFlowerRef?.current?.value);
 
   return (
     <FullScreenCustomDialog {...props} isLoading={isLoading}>
@@ -135,12 +142,51 @@ const AddProductsDialog: React.FC<AddProductsDialogProps> = (props) => {
               }}
               onReset={() => setDisplayImage(false)}
             >
-              <TextField
+              {/* <TextField
                 inputRef={customSearchRef}
                 sx={{ flexGrow: 1 }}
                 placeholder="Type in anything like occasion, description etc..."
                 required
-              />
+              /> */}
+              {/* <DropdownBase
+                label="Flower"
+                options={catalogItems
+                  ?.filter((item) => item.type === "Flower")
+                  .map((item) => ({ label: item.name, value: item.name }))}
+              /> */}
+
+              {/* Flower */}
+              <Box width="50%">
+                <Autocomplete
+                  renderInput={(params) => (
+                    <TextField
+                      inputRef={customSearchFlowerRef}
+                      label="Flower"
+                      {...params}
+                    />
+                  )}
+                  options={catalogItems
+                    ?.filter((item) => item.type === "Flower")
+                    .map((item) => item.name)}
+                />
+              </Box>
+
+              {/* Vase */}
+              <Box width="50%">
+                <Autocomplete
+                  renderInput={(params) => (
+                    <TextField
+                      inputRef={customSearchVaseRef}
+                      label="Vase"
+                      {...params}
+                    />
+                  )}
+                  options={catalogItems
+                    ?.filter((item) => item.type === "Vase")
+                    .map((item) => item.name)}
+                />
+              </Box>
+
               <Button color="inherit" startIcon={<Telegram />} type="submit">
                 GO
               </Button>
@@ -171,7 +217,9 @@ const AddProductsDialog: React.FC<AddProductsDialogProps> = (props) => {
                   height={isGeneratingImage ? 0 : "40rem"}
                   component="img"
                   src={`https://image.pollinations.ai/prompt/${encodeURIComponent(
-                    customSearchRef?.current?.value ?? ""
+                    (customSearchFlowerRef?.current?.value ?? "") +
+                      " with " +
+                      (customSearchVaseRef?.current?.value ?? "")
                   )}`}
                   onLoad={() => setIsGeneratingImage(false)}
                 />
@@ -185,7 +233,7 @@ const AddProductsDialog: React.FC<AddProductsDialogProps> = (props) => {
           options={catalogItems}
           renderInput={(props) => (
             <TextField
-              placeholder="Search Catalog"
+              placeholder="Search for catalog recommendations"
               {...props}
               InputProps={{
                 startAdornment: <Search />,

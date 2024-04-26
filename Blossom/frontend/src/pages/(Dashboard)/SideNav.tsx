@@ -43,7 +43,10 @@ const SideNav: React.FC = () => {
               to={item.value}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: "1.15rem" }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
