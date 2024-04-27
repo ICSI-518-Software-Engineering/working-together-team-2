@@ -1,7 +1,6 @@
 import { GetCatalogServiceRecordType } from "@/api/catalogServices";
 import { LabelValueType } from "@/lib/constants";
 import { Dayjs } from "dayjs";
-import { distance } from "fastest-levenshtein";
 import { z } from "zod";
 import { removeCommonWords } from "./removeCommonWords";
 
@@ -9,7 +8,7 @@ export type ProductSearchType = "catalog" | "custom";
 
 export const productTypeOptions: LabelValueType<string, ProductSearchType>[] = [
   {
-    label: "Catalog",
+    label: "Catalog Recommendation",
     value: "catalog",
   },
   {
@@ -95,9 +94,9 @@ export const collaborativeFilter = (
           innerFlag ||
           searchTokens.some((token) => {
             let tokenFlag = false;
-            tokenFlag =
-              tokenFlag ||
-              distance(token, tag) <= Math.min(token.length, tag.length) / 1.1;
+            // tokenFlag =
+            //   tokenFlag ||
+            //   distance(token, tag) <= Math.min(token.length, tag.length) / 1.1;
 
             tokenFlag =
               tokenFlag ||
