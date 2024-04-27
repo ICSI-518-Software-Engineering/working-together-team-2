@@ -13,7 +13,7 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-  font-size: 80%;
+  font-size: 65%;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("/home-bg.jpg");
   background-repeat: no-repeat;

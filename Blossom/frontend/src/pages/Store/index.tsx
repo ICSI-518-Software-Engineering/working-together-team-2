@@ -91,7 +91,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                 }}>
                     <h2 style={{ marginBottom: '20px', fontSize: '36px', fontWeight: 'bold' }}>Planning an Event?</h2>
                     <p style={{ fontSize: '18px', lineHeight: '1.5' }}>From birthdays to weddings, we've got you covered. Let's make your event unforgettable. Get in touch today!</p>
-                    <Link to="/catalog">
+                    <Link to="/customer/plan">
                         <Button
                             variant="contained"
                             color="primary"
@@ -164,7 +164,7 @@ const StorePage: React.FC<StorePageProps> = () => {
                     <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '18px', lineHeight: '1.5', color: 'white' }}>
                         Let us help you find the perfect bouquet for any occasion. Our expert florists will craft stunning arrangements to express your love and affection. Make your moments more memorable with our exquisite floral creations.
                     </p>
-                    <Link to="/catalog">
+                    <Link to="/customer/suggest">
                         <Button
                             variant="contained"
                             color="primary"
