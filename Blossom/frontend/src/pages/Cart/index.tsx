@@ -14,6 +14,10 @@ import { fetchCart, updateCartItemQuantity, removeCartItem } from '../../api/car
 import { getSignedInUserDetails } from '@/utils/authUtils';
 import CheckoutModal from './checkoutModal';
 
+
+
+
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -72,7 +76,7 @@ const CartPage: React.FC = () => {
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const openCheckoutModal = () => setIsCheckoutOpen(true);
     const closeCheckoutModal = () => setIsCheckoutOpen(false);
-    
+
 
     useEffect(() => {
         if (userId) {
