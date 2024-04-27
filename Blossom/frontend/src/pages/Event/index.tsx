@@ -1,5 +1,5 @@
-import { useState,ChangeEvent } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { useState, ChangeEvent, useEffect } from 'react';
+import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import header from '../../assets/header.png';
 import ig from '../../assets/ig.png';
 import wa from '../../assets/wa.png';
@@ -8,12 +8,47 @@ import im1 from '../../assets/70f9762672f76c8ab8ce4206e054e311.jpg';
 import im2 from '../../assets/event-decor-5.jpg';
 import im3 from '../../assets/f2v-table-people-placing-nametags-1200x797.jpg';
 import im4 from '../../assets/EVENT-FLOWERS-7.png';
-import im5 from '../../assets/837cadc88c3ac7e0f34712c99e015869.jpg'
+import im5 from '../../assets/837cadc88c3ac7e0f34712c99e015869.jpg';
 
 const PlanPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [formData, setFormData] = useState({ name: '', address: '', eventName: '', email:'' });
+    const formatDate = (date: Date) => {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    };
+
+    // Setting today's date as default
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const [formData, setFormData] = useState({
+        name: '',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+        country: '',
+        eventName: '',
+        eventDate: new Date().toISOString().slice(0, 10), // ISO string format and slice for YYYY-MM-DD
+        eventDescription: '',
+        email: '',
+        imageUrl: im1
+    });
     const [showForm, setShowForm] = useState(false);
+    // Ensure the image URL in formData is updated when the image changes
+    useEffect(() => {
+        // Update the imageUrl in formData whenever currentImageIndex changes
+        setFormData(prev => ({ ...prev, imageUrl: images[currentImageIndex].url }));
+    }, [currentImageIndex]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -29,7 +64,7 @@ const PlanPage = () => {
         console.log('Form Data:', formData);
 
         try {
-            const response = await fetch('YOUR_API_ENDPOINT', {
+            const response = await fetch('http://localhost:8086/api/email/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,10 +75,16 @@ const PlanPage = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
+            
             const data = await response.json();
             console.log(data);
-            // Handle success - maybe clear form or show a success message
+              
+            // Show a success message
+            alert('Form submitted successfully!');
+            
+            // Reload the site
+            window.location.reload();
+            
         } catch (error) {
             console.error('There was an error!', error);
         }
@@ -72,12 +113,28 @@ const PlanPage = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: 'white', // White background
+        backgroundColor: '#008080', // White background
         padding: '20px',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Soft shadow for depth
         border: '1px solid #ccc' // Subtle border
     };
+
+    const textFieldStyle = {
+        marginBottom: 2,  // margin-bottom using spacing unit
+        '& .MuiOutlinedInput-root': { // targeting the text field's outline
+            '& fieldset': {
+                borderColor: 'grey',  // more visible border color
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: 'blue',  // focused state
+            }
+        },
+        '& .MuiInputBase-input': {
+            color: 'white' // making text more visible against light backgrounds
+        }
+    };
+
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white', minHeight: '100vh' }}>
@@ -104,7 +161,7 @@ const PlanPage = () => {
                     </Box>
                 </Box>
 
-                // Image Viewer
+                {/* Image Viewer */}
                 <div style={{ marginTop: '20px', position: 'relative' }}>
                     <Box style={{ width: '800px', height: '450px', background: 'white', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
                         <img
@@ -136,51 +193,134 @@ const PlanPage = () => {
 
                 {/* Event Form */}
                 {showForm && (
-                    <form onSubmit={handleSubmit} style={formStyle}>
-                        <TextField
-                            label="Name"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            style={{ backgroundColor: '#00b7eb' }}
-                        />
-                        <TextField
-                            label="Address"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            style={{ backgroundColor: '#00b7eb' }}
-                        />
-                        <TextField
-                            label="Email "
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            style={{ backgroundColor: '#00b7eb' }}
-                        />
-                         <TextField
-                            label="Event Name"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="eventName"
-                            value={formData.eventName}
-                            onChange={handleInputChange}
-                            style={{ backgroundColor: '#00b7eb' }}
-                        />
-                        <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px', width: '50%' }}>
-                            Submit
-                        </Button>
-                    </form>
+                    <Box component="form" onSubmit={handleSubmit} sx={formStyle}>
+                        <Grid container spacing={2} padding={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Street"
+                                    name="street"
+                                    value={formData.street}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="City"
+                                    name="city"
+                                    value={formData.city}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="State"
+                                    name="state"
+                                    value={formData.state}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Zip Code"
+                                    name="zip"
+                                    value={formData.zip}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Country"
+                                    name="country"
+                                    value={formData.country}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Event Name"
+                                    name="eventName"
+                                    value={formData.eventName}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Event Date"
+                                    name="eventDate"
+                                    value={formData.eventDate}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    type="date"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    inputProps={{
+                                        min: formatDate(tomorrow) // Set the minimum date to tomorrow
+                                    }}
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Event Description"
+                                    name="eventDescription"
+                                    value={formData.eventDescription}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    variant="outlined"
+                                    sx={textFieldStyle}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary" fullWidth>
+                                    Submit
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 )}
             </div>
 
