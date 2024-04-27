@@ -12,6 +12,8 @@ import { CatalogItemDataType } from "../(Dashboard)/Catalog/typesAndData";
 import { addToCart } from '../../api/cartServices';
 import { createCustomCatalogService } from '../../api/catalogServices';
 import { getSignedInUserDetails } from '@/utils/authUtils';
+import BuyNowModal from '../Catalog/BuyNowModal'; // Import BuyNowModal
+
 
 // Theme Configuration
 const theme = createTheme({
@@ -57,6 +59,7 @@ interface Product {
     isActive: boolean;
 }
 
+
 const CustomizePage: React.FC = () => {
     const [vendor, setVendor] = useState('');
     const [filteredFlowers, setFilteredFlowers] = useState<Product[]>([]);
@@ -66,13 +69,64 @@ const CustomizePage: React.FC = () => {
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [buyNowModalOpen, setBuyNowModalOpen] = useState(false);
+    const [currentProductDetails, setCurrentProductDetails] = useState({ productId: '', vendorId: '', userId: '' });
+    const handleBuyNow = async () => {
+        if (!selectedVendor || flowerSelections.length === 0) {
+            console.error('Vendor not selected or no flowers selected');
+            return;
+        }
+
+
+
+        // Assuming these are your allowed types
+        type ProductType = "Flower" | "Vase" | "Custom" | "FlowerAndVase";
+
+        const customProductData: {
+            name: string;
+            description: string;
+            price: number;
+            tags: string[];
+            type: ProductType; // Adjusted to use ProductType
+            stockInNumber: number;
+            image: string;
+        } = {
+            name: "Customized Product",
+            description: generateSelectedProductsText(),
+            price: calculateOrderTotal(),
+            tags: flowerSelections.map(selection => selection.flower?.name).filter((name): name is string => !!name),
+            type: "Custom", // Ensure this is one of the accepted values
+            stockInNumber: 100,
+            image: imageUrl ? imageUrl : `https://image.pollinations.ai/prompt/${encodeURIComponent(generateSelectedProductsText())}`
+        };
+
+
+        try {
+            const createdProduct = await createCustomCatalogService(customProductData);
+            const productId = createdProduct._id ? createdProduct._id : '';
+            const user = getSignedInUserDetails();
+            const userId = user?._id ? user._id : '';
+            if (createdProduct && createdProduct._id) {
+                setCurrentProductDetails({
+                    productId: productId,
+                    vendorId: selectedVendor.id,
+                    userId: userId
+                });
+                setBuyNowModalOpen(true);
+            }
+        } catch (error) {
+            console.error('Error creating product:', error);
+        }
+    };
+
+
 
     const handleImageUrlChange = (newImageUrl: string | null) => {
         setImageUrl(newImageUrl);
     };
 
     const [flowerSelections, setFlowerSelections] = useState<{ flower: Product | null, quantity: number }[]>([{ flower: null, quantity: 1 }]);
-    
+
 
     useEffect(() => {
         // Fetch vendors from API
@@ -210,15 +264,18 @@ const CustomizePage: React.FC = () => {
         const description = generateSelectedProductsText();
         const tags = flowerSelections.map(selection => selection.flower?.name).filter((name): name is string => !!name);
         const totalPrice = calculateOrderTotal();
+        const selectedImageText = generateSelectedProductsText(); // Call the function here to get the text directly
+
 
         const customProductData: CatalogItemDataType = {
+
             name: customProductName,
             description,
             price: totalPrice,
             tags,
             type: "Custom",
             stockInNumber: 100,
-            image: imageUrl? imageUrl:''  // Add image blob here
+            image: imageUrl ? imageUrl : `https://image.pollinations.ai/prompt/${selectedImageText}`  // Add image blob here
         };
 
         try {
@@ -239,11 +296,6 @@ const CustomizePage: React.FC = () => {
             alert('Error occure while adding to cart!');
             console.error('Error handling add to cart:', error);
         }
-    };
-
-
-    const handleBuyNow = () => {
-        // Implement visualize logic here (e.g., opening a modal)
     };
 
     const handleVisualizeClick = () => {
@@ -417,7 +469,9 @@ const CustomizePage: React.FC = () => {
                     </Box>
 
                     <Button startIcon={<ShoppingCartIcon />} variant="contained" color="primary" onClick={handleAddToCart} sx={{ mt: 2 }}>Add to Cart</Button>
-                    <Button startIcon={<MonetizationOnIcon />} variant="contained" color="secondary" onClick={handleBuyNow} sx={{ mt: 2 }}>Buy Now</Button>
+                    <Button startIcon={<MonetizationOnIcon />} variant="contained" color="secondary" onClick={handleBuyNow} sx={{ mt: 2 }}>
+                        Buy Now
+                    </Button>
                     <Button variant="outlined" color="secondary" onClick={handleVisualizeClick} sx={{ mt: 2 }}>Visualize</Button>
                     <ProductVisualizationModal
                         open={showModal}
@@ -425,6 +479,14 @@ const CustomizePage: React.FC = () => {
                         selectedProductsText={generateSelectedProductsText()}
                         onImageUrlChange={handleImageUrlChange} // Pass the function as a prop
                     />
+                    <BuyNowModal
+                        open={buyNowModalOpen}
+                        onClose={() => setBuyNowModalOpen(false)}
+                        productId={currentProductDetails.productId}
+                        vendorId={currentProductDetails.vendorId}
+                        userId={currentProductDetails.userId}
+                    />
+
 
                 </Box>
                 {/* Footer */}

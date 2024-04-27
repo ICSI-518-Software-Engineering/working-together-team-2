@@ -1,3 +1,4 @@
+
 import  { useState, useEffect } from 'react';
 import ProductModal from '../Catalog/ProductModal';
 import header from '../../assets/header.png';
@@ -178,7 +179,7 @@ const SuggestPage = () => {
 
     const fetchProductsByVendor = (vendorId: string) => {
         vendorId;
-        fetch(http://localhost:8086/api/products/in-stock)
+        fetch(`http://localhost:8086/api/products/in-stock`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
@@ -434,4 +435,4 @@ const SuggestPage = () => {
     );
 };
 
-export default SuggestPage;
+export default SuggestPage;
