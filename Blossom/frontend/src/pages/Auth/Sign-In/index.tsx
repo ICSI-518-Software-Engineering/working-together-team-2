@@ -33,7 +33,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ vendor }) => {
             if (vendor) {
               signInUser(d, "/vendor/overview");
             } else {
-              signInUser(d);
+              signInUser(d, "/customer/store");
             }
           },
           onError: (e) => {

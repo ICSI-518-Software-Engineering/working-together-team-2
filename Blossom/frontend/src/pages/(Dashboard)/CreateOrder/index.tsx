@@ -108,7 +108,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   placeholder="Enter customer name"
                   fullWidth
                   size="small"
-                  // required
+                // required
                 />
                 <Input
                   control={control}
@@ -117,7 +117,7 @@ const DashboardCreateOrderPage: React.FC = () => {
                   placeholder="Enter customer email"
                   fullWidth
                   size="small"
-                  // required
+                // required
                 />
                 <Input
                   control={control}
@@ -150,7 +150,7 @@ const DashboardCreateOrderPage: React.FC = () => {
               control={control}
               label="Delivery Type"
               row
-              // required
+            // required
             />
 
             {/* Delivery Options */}
@@ -250,7 +250,7 @@ const DashboardCreateOrderPage: React.FC = () => {
               disabled={Object.keys(cart ?? {})?.length === 0}
               color="secondary"
             >
-              Proceed to payment
+              Create Order
             </Button>
           </Box>
         </Stack>
