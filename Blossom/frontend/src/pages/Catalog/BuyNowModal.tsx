@@ -91,6 +91,7 @@ interface BuyNowModalProps {
     userId: string;
 }
 
+
 const BuyNowModal: React.FC<BuyNowModalProps> = ({ open, onClose, productId, vendorId, userId }) => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const appliedTheme = React.useMemo(() => createTheme(prefersDarkMode ? theme : theme), [prefersDarkMode]);
@@ -99,8 +100,26 @@ const BuyNowModal: React.FC<BuyNowModalProps> = ({ open, onClose, productId, ven
         city: '',
         state: '',
         zip: '',
-        deliveryDate: '', // Initialize with today's date using Dayjs
+        deliveryDate: new Date().toISOString().slice(0, 10), // Initialize with today's date using Dayjs
     });
+    // Setting today's date as default
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const formatDate = (date: Date) => {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDetails({ ...details, [event.target.name]: event.target.value });
@@ -182,6 +201,9 @@ const BuyNowModal: React.FC<BuyNowModalProps> = ({ open, onClose, productId, ven
                         variant="outlined"
                         InputLabelProps={{
                             shrink: true,
+                        }}
+                        inputProps={{
+                            min: formatDate(tomorrow) // Set the minimum date to tomorrow
                         }}
                         value={details.deliveryDate}
                         onChange={handleChange}
