@@ -44,10 +44,11 @@ export const TitleTypography: React.FC<TypographyProps> = (props) => {
       variant="h3"
       fontSize="5rem"
       fontWeight={600}
-      // sx={({ palette }) => ({
-      //   WebkitTextFillColor: palette.background.default,
-      //   WebkitTextStroke: "0.5px",
-      // })}
+      sx={({ palette }) => ({
+        // WebkitTextFillColor: palette.background.default,
+        WebkitTextStroke: "1px",
+        WebkitTextStrokeColor: palette.secondary.main,
+      })}
       {...props}
     >
       {props.children}
