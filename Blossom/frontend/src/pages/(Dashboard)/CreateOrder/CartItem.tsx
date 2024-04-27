@@ -52,7 +52,7 @@ const CartItem: React.FC<CartItemProps> = ({ product, quantity, preview }) => {
 
           {/* Price */}
           <Typography>{formatPrice(product.price * quantity)}</Typography>
-          {/product description/}
+          {/*product description*/}
            {/* Type */}
            <Typography color="gray" sx={lineClamp(1)} title={product.description}>
             {product.description}
@@ -76,7 +76,7 @@ const CartItem: React.FC<CartItemProps> = ({ product, quantity, preview }) => {
 
         {/* Text Field */}
         <TextField
-          value={preview ? x ${quantity} : quantity}
+          value={preview ? `x ${quantity}` : quantity}
           onChange={({ target }) => {
             const newVal = Number(target.value);
             if (target.value && newVal === 0) {
