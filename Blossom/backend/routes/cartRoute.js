@@ -97,21 +97,7 @@ cartRouter.post('/create-orders', async (req, res) => {
         res.status(500).json({ message: 'Error creating orders', error: error.message });
     }
 });
-// GET /api/cart
-cartRouter.get('/all', async (req, res) => {
-    const { userId } = req.query;  // Assuming you're passing userId as a query parameter
 
-    try {
-        await validateCustomer(userId);
-        const cart = await CartModel.find();
-        if (!cart) {
-            return res.status(404).send('Cart not found');
-        }
-        res.status(200).json(cart.items);
-    } catch (error) {
-        res.status(500).send('Error fetching cart: ' + error.message);
-    }
-});
 
 cartRouter.post('/update-cart', async (req, res) => {
     const { userId, productId, vendorId, quantity } = req.body;
