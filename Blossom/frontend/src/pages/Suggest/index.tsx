@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import ProductModal from './ProductModal';
+import  { useState, useEffect } from 'react';
+import ProductModal from '../Catalog/ProductModal';
 import header from '../../assets/header.png';
 import {
-    Checkbox, FormControlLabel, FormGroup, Typography, Autocomplete, TextField, Box,
-    Grid, Pagination // Import Grid and Pagination here
+    Typography, Autocomplete, Select, MenuItem, TextField, Box, FormControl, InputLabel,
+    Grid, Button
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
@@ -49,6 +49,54 @@ const ratingTheme = createTheme({
 });
 
 
+const occasionTags: Record<Occasion, string[]> = {
+    "Mother's Day": ["roses", "peonies", "orchids", "lilies", "glass vase", "porcelain vase", "hydrangeas", "chrysanthemums", "baby's breath", "lavender"],
+    "Valentine's Day": ["red roses", "pink tulips", "carnations", "lilies", "heart-shaped arrangement", "crystal vase", "white roses", "baby's breath", "peonies", "calla lilies"],
+    "Christmas": ["poinsettias", "holly", "ivy", "fir branches", "red berries", "pinecones", "festive ribbon", "silver vase", "white lilies", "spruce"],
+    "Birthday": ["daisies", "sunflowers", "colorful roses", "balloons", "mixed floral arrangement", "bright vase", "gerberas", "tulips", "snapdragons", "confetti"],
+    "Wedding": ["white roses", "peonies", "lilies", "orchids", "elegant ribbon", "silk flowers", "satin vase", "gardenias", "hydrangeas", "baby's breath"],
+    "Anniversary": ["roses", "orchids", "luxury arrangement", "mixed bouquets", "champagne vase", "peonies", "lilies", "red tulips", "ivory vase", "silk flowers"],
+    "Graduation": ["tulips", "bright gerberas", "roses", "sunflowers", "celebratory ribbon", "modern vase", "daisies", "congratulatory card", "balloons", "snapdragons"],
+    "New Year": ["white lilies", "sparkler features", "silver roses", "black vase", "new beginnings mix", "champagne glasses", "gold ribbon", "orchids", "party decor", "festive garland"],
+    "Easter": ["easter lilies", "tulips", "pastel roses", "spring mix", "bunny decorations", "wicker basket", "hyacinths", "daffodils", "ribbon", "nest features"],
+    "Thanksgiving": ["fall leaves", "chrysanthemums", "pumpkins", "cornucopia arrangement", "berry sprigs", "rustic vase", "autumn-hued ribbons", "sunflowers", "cattails", "harvest mix"]
+};
+
+// Tags for relationships focusing more on the bouquet composition
+const relationshipTags: Record<Relationship, string[]> = {
+    "Mother": ["roses", "tulips", "carnations", "orchids", "peonies", "elegant vase", "nurturing mix", "hydrangeas", "soft colors", "porcelain vase"],
+    "Partner": ["romantic roses", "luxury bouquet", "lilies", "peonies", "passion arrangement", "heart-shaped vase", "red tulips", "crystal vase", "love blooms", "exotic mix"],
+    "Friend": ["bright daisies", "sunflowers", "cheerful mix", "casual vase", "friendship blooms", "gerberas", "fun vase", "colorful snapdragons", "tulips", "lively roses"],
+    "Colleague": ["professional orchids", "minimalist roses", "elegant lilies", "office suitable mix", "modern vase", "subtle colors", "sophisticated arrangement", "greenery", "neutral tones", "sleek design"],
+    "Family": ["family mix", "varied roses", "sunflowers", "lilies", "comfort arrangement", "home vase", "warm colors", "hydrangeas", "family gathering blooms", "festive mix"]
+};
+
+// Define specific types for occasions and relationships
+type Occasion = "Mother's Day" | "Valentine's Day" | "Christmas" | "Birthday" | "Wedding" | "Anniversary" | "Graduation" | "New Year" | "Easter" | "Thanksgiving";
+type Relationship = "Mother" | "Partner" | "Friend" | "Colleague" | "Family";
+
+
+
+function recommendProducts(occasion: Occasion | null, relationship: Relationship | null, products: Product[] | null): Product[] | null {
+    if (occasion && relationship && products) {
+        const productsScores = products.map(product => {
+            let score = 0;
+            const tags = [...occasionTags[occasion], ...relationshipTags[relationship]];
+            tags.forEach(tag => {
+                if (product.tags.includes(tag)) score += 10;
+                if (product.description.toLowerCase().includes(tag.toLowerCase())) score += 5;
+            });
+            return { ...product, score };
+        });
+
+        // Sort by score and return the top matching products
+        return productsScores.filter(p => p.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+    return products;
+
+}
+
+
 interface Vendor {
     id: string; // Add ID property
     name: string;
@@ -62,18 +110,30 @@ interface Product {
     rating: number;
     imageUrl: string;
     description: string;
+    tags: string[];
+
 }
 
+interface IOccasionOption {
+    label: string;
+    value: Occasion;
+}
 
-const productsPerPage = 12;
-const CatalogPage = () => {
+interface IRelationshipOption {
+    label: string;
+    value: Relationship;
+}
+
+const SuggestPage = () => {
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [showProducts, setShowProducts] = useState<boolean>(false);
+
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [priceFilter, setPriceFilter] = useState<string[]>([]);
-    const [ingredientFilter, setIngredientFilter] = useState<string[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
     // Filter products based on price
 
 
@@ -85,35 +145,14 @@ const CatalogPage = () => {
         setSelectedProduct(product);
         setModalOpen(true);
     };
-    const [page, setPage] = useState(1);
 
-    const applyFilters = () => {
-        return products
-            .filter(product => priceFilter.length === 0 || priceFilter.some(range => {
-                const [min, max] = range.split('-').map(Number);
-                return product.price >= min && product.price <= max;
-            }))
-            .filter(product => ingredientFilter.length === 0 || ingredientFilter.some(ingredient => product.description.toLowerCase().includes(ingredient.toLowerCase())));
-    };
-    const handlePriceFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { checked, value } = event.target;
-        setPriceFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
-    };
+    const [selectedOccasion, setSelectedOccasion] = useState<Occasion | null>(null);
+    const [selectedRelationship, setSelectedRelationship] = useState<Relationship | null>(null);
+    const handleSuggestion = () => {
+        setFilteredProducts(products ? recommendProducts(selectedOccasion, selectedRelationship, products) : []);
+        setShowProducts(true);
+    }
 
-    const handleIngredientFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { checked, value } = event.target;
-        setIngredientFilter(prev => checked ? [...prev, value] : prev.filter(item => item !== value));
-    };
-
-
-    const filteredProducts = applyFilters();
-    const totalProducts = selectedVendor ? products.length : 0;
-    const totalPages = Math.ceil(totalProducts / productsPerPage);
-
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        event;
-        setPage(value);
-    };
     useEffect(() => {
         // Fetch vendors from API
         fetch('http://localhost:8086/api/auth/vendors')
@@ -139,7 +178,7 @@ const CatalogPage = () => {
 
     const fetchProductsByVendor = (vendorId: string) => {
         vendorId;
-        fetch(`http://localhost:8086/api/products/in-stock`)
+        fetch(http://localhost:8086/api/products/in-stock)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
@@ -150,6 +189,7 @@ const CatalogPage = () => {
                     imageUrl: data.image,
                     description: data.description,
                     stock: data.stockInNumber,
+                    tags: data.tags
                 }));
                 setProducts(mappedProducts);
             })
@@ -162,34 +202,23 @@ const CatalogPage = () => {
         setSelectedProduct(null);
         setModalOpen(false);
     };
+    const occasionOptions: IOccasionOption[] = Object.keys(occasionTags).map((occasion) => ({
+        label: occasion,
+        value: occasion as Occasion,
+    }));
+
+    const relationshipOptions: IRelationshipOption[] = Object.keys(relationshipTags).map((relationship) => ({
+        label: relationship,
+        value: relationship as Relationship,
+    }));
+
 
 
     return (
         <>
             <div style={{ display: 'flex', backgroundColor: 'white', minHeight: '100vh' }}>
-                {/* Sidebar */}
-                {/* Filters Section */}
-                <div style={{ width: '250px', padding: '20px', backgroundColor: '#f4f4f4', color: 'black' }}>
-                    <Typography variant="h6" style={{ marginBottom: '10px' }}>Filters</Typography>
-                    {/* Price Filter */}
-                    <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Price</Typography>
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="0-50" />} label="0-50" />
-                        <FormControlLabel control={<Checkbox onChange={handlePriceFilterChange} value="50-100" />} label="50-100" />
-                        {/* Add more price ranges */}
-                    </FormGroup>
-
-                    {/* Ingredient Filter */}
-                    <Typography variant="subtitle1" style={{ margin: '20px 0' }}>Ingredients</Typography>
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Roses" />} label="Roses" />
-                        <FormControlLabel control={<Checkbox onChange={handleIngredientFilterChange} value="Sunflowers" />} label="Sunflowers" />
-                        {/* Add checkboxes for each ingredient */}
-                    </FormGroup>
-                </div>
-
                 {/* Main Content */}
-                <div style={{ flex: 1, padding: '20px', marginRight: '200px' }}>
+                <div style={{ flex: 1, padding: '20px', marginRight: '150px', marginLeft: '150px' }}>
                     {/* Header with Image and Select Vendor Option */}
                     <Box style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAE1DC', padding: '20px', borderRadius: '8px', height: '250px' }}>
                         <Box style={{ zIndex: 2, textAlign: 'center' }}>
@@ -214,7 +243,7 @@ const CatalogPage = () => {
                                 onChange={(event: any, newVendor: Vendor | null) => {
                                     event;
                                     setSelectedVendor(newVendor);
-                                    setPage(1);
+
                                 }}
                                 isOptionEqualToValue={(option, value) => option.email === value?.email}
                             />
@@ -234,14 +263,98 @@ const CatalogPage = () => {
                             />
                         </Box>
                     </Box>
-                    {selectedVendor && (
-                        <Grid container spacing={2} style={{ marginTop: theme.spacing(2) }}>
+                    <>
+                        {selectedVendor && (
+                            <Box style={{
+                                display: 'flex',
+                                justifyContent: 'center', // Center horizontally
+                                alignItems: 'center', // Center vertically
+                                backgroundColor: 'white', // Keep overall background white
+                                padding: '20px', // Add padding as needed
+                                width: '100%' // Full width to center within
+                            }}>
+                                {/* Heading and Dropdown for selecting occasion */}
+                                <Box style={{ margin: '0 20px' }}>  {/* Container for each dropdown and its label */}
+                                    <Typography variant="subtitle1" style={{ color: '#333', fontWeight: 'bold', marginBottom: '0.5em' }}>
+                                        Select Occasion
+                                    </Typography>
+                                    <FormControl style={{
+                                        backgroundColor: 'coral', // Coral background for the dropdown
+                                        borderRadius: '4px', // Rounded corners
+                                        minWidth: 200, // Minimum width
+                                        width: '100%' // Use full width of the container
+                                    }}>
+                                        <InputLabel></InputLabel>
+                                        <Select
+                                            value={selectedOccasion}
+                                            onChange={(event) => setSelectedOccasion(event.target.value as Occasion)}
+                                        >
+                                            {occasionOptions.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+
+                                {/* Heading and Dropdown for selecting relationship */}
+                                <Box style={{ margin: '0 20px' }}>  {/* Container for each dropdown and its label */}
+                                    <Typography variant="subtitle1" style={{ color: '#333', fontWeight: 'bold', marginBottom: '0.5em' }}>
+                                        Select Recipient's Relationship
+                                    </Typography>
+                                    <FormControl style={{
+                                        backgroundColor: 'coral', // Coral background for the dropdown
+                                        borderRadius: '4px', // Rounded corners
+                                        minWidth: 200, // Minimum width
+                                        width: '100%' // Use full width of the container
+                                    }}>
+                                        <InputLabel></InputLabel>
+                                        <Select
+                                            value={selectedRelationship}
+                                            onChange={(event) => setSelectedRelationship(event.target.value as Relationship)}
+                                        >
+                                            {relationshipOptions.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Box>
+                        )}
+
+                        {/* Other JSX code */}
+                    </>
+                    <Box style={{ margin: '20px', textAlign: 'center' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={!selectedOccasion && !selectedRelationship}
+                            onClick={handleSuggestion}
+                        >
+                            Get Suggestions
+                        </Button>
+                    </Box>
+                    {showProducts && selectedVendor && (
+                        <Grid container spacing={2} justifyContent="center" style={{ marginTop: theme.spacing(2) }}>
                             {filteredProducts
                                 .sort((a, b) => b.rating - a.rating) // Sort products by rating in descending order
-                                .slice((page - 1) * productsPerPage, page * productsPerPage) // Pagination logic
                                 .map((product, index) => (
-                                    <Grid item xs={12} sm={3} key={index} onClick={() => handleOpenModal(product, selectedVendor)}>
-                                        <Box textAlign="center" p={2} boxShadow={2} borderRadius={2} position="relative">
+                                    <Grid item
+                                        xs={12}
+                                        sm={filteredProducts.length === 1 ? 12 : (filteredProducts.length === 2 ? 6 : 4)}
+                                        md={filteredProducts.length === 1 ? 12 : (filteredProducts.length === 2 ? 6 : 4)}
+                                        lg={filteredProducts.length === 1 ? 12 : (filteredProducts.length === 2 ? 6 : 4)}
+                                        key={index}
+                                        onClick={() => handleOpenModal(product, selectedVendor)}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center'  // Ensures the content within the grid item is centered
+                                        }}
+                                    >
+                                        <Box textAlign="center" p={2} boxShadow={2} borderRadius={2} position="relative" style={{ maxWidth: '300px', width: '100%' }}>
                                             {/* Rating displayed in top right corner */}
                                             <ThemeProvider theme={ratingTheme}>
                                                 <Box
@@ -280,22 +393,6 @@ const CatalogPage = () => {
                                 ))}
                         </Grid>
                     )}
-
-                    {/* Pagination component */}
-                    {selectedVendor && totalPages > 1 && (
-                        <ThemeProvider theme={theme}>
-                            <Box display="flex" justifyContent="center" mt={4}>
-                                <Pagination
-                                    count={totalPages}
-                                    page={page}
-                                    onChange={handlePageChange}
-                                    color="primary"
-                                />
-                            </Box>
-                        </ThemeProvider>
-                    )}
-
-
 
                     {/* Additional content can go here */}
 
@@ -337,4 +434,4 @@ const CatalogPage = () => {
     );
 };
 
-export default CatalogPage;
+export default SuggestPage;

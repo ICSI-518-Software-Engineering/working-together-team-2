@@ -15,18 +15,21 @@
     "@fontsource/roboto": "^5.0.12",
     "@hookform/resolvers": "^3.3.4",
     "@mui/icons-material": "^5.15.12",
-    "@mui/material": "^5.15.12",
-    "@mui/x-date-pickers": "^6.19.6",
+    "@mui/material": "^5.15.14",
+    "@mui/x-date-pickers": "^6.19.8",
     "@tanstack/react-query": "^5.24.7",
     "axios": "^1.6.7",
     "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.10",
+    "fastest-levenshtein": "^1.0.16",
     "file64": "^1.0.3",
     "jwt-decode": "^4.0.0",
     "material-react-table": "^2.12.1",
+    "openai": "^4.29.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.0",
+    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.22.2",
     "zod": "^3.22.4",
     "zod-password-validation-schema": "^0.0.2",
@@ -34,8 +37,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
-    "@types/react": "^18.2.56",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -44,6 +47,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
-    "vite": "^5.1.4"
+    "vite": "^5.2.2"
   }
 }

@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import React, {  useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     AppBar, Box, Grid, Typography, Paper, Button, TextField, Table,
     TableBody, Toolbar, TableCell, TableContainer, TableHead, TableRow
@@ -10,8 +10,10 @@ import header from '../../assets/header.png';
 import ig from '../../assets/ig.png';
 import wa from '../../assets/wa.png';
 import fb from '../../assets/fb.png';
-import { fetchCart, updateCartItemQuantity, removeCartItem } from '../../api/cartService';
+import { fetchCart, updateCartItemQuantity, removeCartItem } from '../../api/cartServices';
 import { getSignedInUserDetails } from '@/utils/authUtils';
+import CheckoutModal from './checkoutModal';
+
 
 
 
@@ -42,7 +44,7 @@ const theme = createTheme({
 interface Product {
     id: string;
     name: string;
-    imageUrl: string;
+    image: string;
     description: string;
     price: number;
 }
@@ -60,17 +62,21 @@ interface CartItem {
     quantity: number;
 }
 
-interface Cart {
-    user: string;
-    items: CartItem[];
-    modifiedOn: Date;
-}
+// interface Cart {
+//     user: string;
+//     items: CartItem[];
+//     modifiedOn: Date;
+// }
 
 
 const CartPage: React.FC = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const user = getSignedInUserDetails();
     const userId = user?._id;  // Assuming you store userId in localStorage
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const openCheckoutModal = () => setIsCheckoutOpen(true);
+    const closeCheckoutModal = () => setIsCheckoutOpen(false);
+
 
     useEffect(() => {
         if (userId) {
@@ -81,20 +87,21 @@ const CartPage: React.FC = () => {
     }, [userId]);
 
     const handleQuantityChange = (id: string, quantity: number) => {
-        if(userId) {
+        if (userId) {
             if (quantity < 1) return; // Optionally handle the scenario where the quantity is less than 1
+            console.log(id);
             updateCartItemQuantity(userId, id, quantity)
                 .then(updatedCart => setCartItems(updatedCart.items))
                 .catch(error => console.error('Error updating cart item:', error));
         }
-        
+
     };
 
     const handleRemoveItem = (id: string) => {
-        if(userId)
-        removeCartItem(userId, id)
-            .then(updatedCart => setCartItems(updatedCart.items))
-            .catch(error => console.error('Error removing item from cart:', error));
+        if (userId)
+            removeCartItem(userId, id)
+                .then(updatedCart => setCartItems(updatedCart.items))
+                .catch(error => console.error('Error removing item from cart:', error));
     };
 
     const getTotalCost = () => {
@@ -104,7 +111,7 @@ const CartPage: React.FC = () => {
 
 
     const totalCost = getTotalCost();
-    
+
     const handleCouponChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCoupon(event.target.value);
     };
@@ -147,7 +154,7 @@ const CartPage: React.FC = () => {
                                 <TableRow key={item.id}>
                                     <TableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            <img src={item.product.imageUrl} alt={item.product.name} style={{ width: '50px', marginRight: '20px' }} />
+                                            <img src={item.product.image} alt={item.product.name} style={{ width: '50px', marginRight: '20px' }} />
                                             <Typography>{item.product.name}</Typography>
                                         </Box>
                                     </TableCell>
@@ -156,13 +163,13 @@ const CartPage: React.FC = () => {
                                         <TextField
                                             type="number"
                                             value={item.quantity}
-                                            onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                                            onChange={(e) => handleQuantityChange(item.product.id, parseInt(e.target.value))}
                                             sx={{ width: '60px' }}
                                         />
                                     </TableCell>
-                                    <TableCell align="right">${(item.quantity * item.quantity).toFixed(2)}</TableCell>
+                                    <TableCell align="right">${(item.product.price * item.quantity).toFixed(2)}</TableCell>
                                     <TableCell align="right">
-                                        <Button color="error" onClick={() => handleRemoveItem(item.id)}>
+                                        <Button color="error" onClick={() => handleRemoveItem(item.product.id)}>
                                             <DeleteIcon />
                                         </Button>
                                     </TableCell>
@@ -213,9 +220,15 @@ const CartPage: React.FC = () => {
                                         bgcolor: 'error.main',
                                         '&:hover': { bgcolor: 'error.dark' }
                                     }}
+                                    onClick={openCheckoutModal}
                                 >
                                     PROCEED TO CHECKOUT
                                 </Button>
+                                <CheckoutModal
+                                    open={isCheckoutOpen}
+                                    onClose={closeCheckoutModal}
+
+                                />
                             </Paper>
                         </Grid>
                     </Grid>
