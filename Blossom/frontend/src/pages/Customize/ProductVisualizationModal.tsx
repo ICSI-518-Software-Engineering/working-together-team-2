@@ -42,7 +42,7 @@ const Image = styled('img')({
 const ProductVisualizationModal: React.FC<ProductVisualizationModalProps> = ({ open, onClose, selectedProductsText, onImageUrlChange }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    
+
 
     useEffect(() => {
         const generateImage = async () => {
@@ -65,11 +65,11 @@ const ProductVisualizationModal: React.FC<ProductVisualizationModalProps> = ({ o
                 //     }),
                 // });
                 // const data = await response.json();
-                
-                const url=`https://image.pollinations.ai/prompt/${selectedProductsText}`;
+
+                const url = `https://image.pollinations.ai/prompt/${selectedProductsText}`;
                 setImageUrl(url);
-                 // Access the url from the response correctly
-                 onImageUrlChange(url);  // Add this prop
+                // Access the url from the response correctly
+                onImageUrlChange(url);  // Add this prop
 
             } catch (error) {
                 console.error('Error generating image:', error);

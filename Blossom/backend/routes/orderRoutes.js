@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { sendErrorResponse } from "../lib/utils.js";
 import OrderModel from "../models/OrderModel.js";
-import ProductModel from "../models/ProductModel.js";
 import UserModel from "../models/UserModel.js";
+import ProductModel  from "../models/ProductModel.js";
 
 const orderRouter = Router();
 
@@ -62,6 +62,29 @@ orderRouter.get("/:vendorId", async (req, res) => {
     return res.json(orders);
   } catch (error) {
     return sendErrorResponse(error, res);
+  }
+});
+
+orderRouter.get("/user/:userId", async (req, res) => {
+  try {
+  
+    const orders = await OrderModel.find({
+      'customerDetails.id': req.params.userId
+    }).populate("products.productId")
+    .lean()
+    .transform((res) =>
+      res?.map((o) => ({
+        ...o,
+        products: o?.products?.map((p) => ({
+          product: p.productId,
+          quantity: p.quantity,
+        })),
+      }))
+    );
+    return res.json(orders);
+  } catch (error) {
+    console.error("Failed to fetch orders:", error);
+    res.status(500).send({ error: "Failed to fetch orders" });
   }
 });
 

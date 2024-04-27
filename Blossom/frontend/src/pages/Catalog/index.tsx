@@ -64,60 +64,7 @@ interface Product {
     description: string;
 }
 
-// // Static data for vendors, sorted in ascending order by name
-// const vendors: Vendor[] = [
-//     { id: '1', name: 'Vendor 1', email: 'vendor1@example.com' },
-//     { id: '2', name: 'Vendor2', email: 'vendor2@example.com' },
-//     // Add more vendors here
-// ].sort((a, b) => a.name.localeCompare(b.name));
 
-
-
-// // Static data for products (will be replaced with API call)
-// const productsByVendor: { [key: string]: Product[] } = {
-//     'Giridhar': [
-//         { name: 'Product adfiuefhwfkjbf', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         { name: 'Product A', price: 10, rating: 4, imageUrl: 'product_image_url', description: 'Product A description' },
-//         { name: 'Product B', price: 20, rating: 3, imageUrl: 'product_image_url', description: 'Product B description' },
-//         // Add more products for Vendor 1 here
-
-//     ],
-//     'Vendor2': [
-//         { name: 'Product X', price: 15, rating: 5, imageUrl: 'product_image_url', description: 'Product X description' },
-//         { name: 'Product Y', price: 25, rating: 4, imageUrl: 'product_image_url', description: 'Product Y description' },
-//         // Add more products for Vendor 2 here
-//     ],
-//     // Add more vendors and products here
-// };
 const productsPerPage = 12;
 const CatalogPage = () => {
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
@@ -131,7 +78,7 @@ const CatalogPage = () => {
 
 
     // Function to handle opening modal
-    const handleOpenModal = (product: Product,vendor:Vendor) => {
+    const handleOpenModal = (product: Product, vendor: Vendor) => {
         console.log(product.id);
 
         setSelectedVendor(vendor);
@@ -255,7 +202,7 @@ const CatalogPage = () => {
                             <Autocomplete
                                 options={vendors}
                                 getOptionLabel={(option) => option.name}
-                                style={{ width: 300, backgroundColor: 'white', borderRadius: '4px' }}
+                                style={{ width: 300, backgroundColor: 'coral', borderRadius: '4px' }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}

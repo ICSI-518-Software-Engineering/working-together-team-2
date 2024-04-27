@@ -91,7 +91,7 @@ interface BuyNowModalProps {
     userId: string;
 }
 
-const BuyNowModal: React.FC<BuyNowModalProps> =  ({ open, onClose, productId, vendorId, userId }) => {
+const BuyNowModal: React.FC<BuyNowModalProps> = ({ open, onClose, productId, vendorId, userId }) => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const appliedTheme = React.useMemo(() => createTheme(prefersDarkMode ? theme : theme), [prefersDarkMode]);
     const [details, setDetails] = useState<CustomerDetails>({
@@ -114,7 +114,7 @@ const BuyNowModal: React.FC<BuyNowModalProps> =  ({ open, onClose, productId, ve
             const dateObject: Date = new Date(dateMillis);
             const detailsWithDate = { ...details, deliveryDate: dateObject };
             try {
-                await buyNow(userId,productId,vendorId, detailsWithDate);
+                await buyNow(userId, productId, vendorId, detailsWithDate);
                 alert('Order placed successfully!');
                 onClose();
             } catch (error) {
@@ -128,70 +128,70 @@ const BuyNowModal: React.FC<BuyNowModalProps> =  ({ open, onClose, productId, ve
 
     return (
         <ThemeProvider theme={appliedTheme}>
-        <CssBaseline />  {/* Apply baseline CSS to normalize styles */}
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Enter Shipping Details</DialogTitle>
-            <DialogContent>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            name="address"
-                            label="Address"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={details.address}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="dense"
-                            name="city"
-                            label="City"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={details.city}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="dense"
-                            name="state"
-                            label="State"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={details.state}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="dense"
-                            name="zip"
-                            label="ZIP Code"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={details.zip}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="dense"
-                            name="deliveryDate"
-                            label="Delivery Date"
-                            type="date"
-                            fullWidth
-                            variant="outlined"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            value={details.deliveryDate}
-                            onChange={handleChange}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={onClose} color="primary">Cancel</Button>
-                        <Button onClick={handleConfirm} color="primary">Confirm</Button>
-                    </DialogActions>
-                </Dialog>
+            <CssBaseline />  {/* Apply baseline CSS to normalize styles */}
+            <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+                <DialogTitle>Enter Shipping Details</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="address"
+                        label="Address"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={details.address}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="city"
+                        label="City"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={details.city}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="state"
+                        label="State"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={details.state}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="zip"
+                        label="ZIP Code"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={details.zip}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="deliveryDate"
+                        label="Delivery Date"
+                        type="date"
+                        fullWidth
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        value={details.deliveryDate}
+                        onChange={handleChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onClose} color="primary">Cancel</Button>
+                    <Button onClick={handleConfirm} color="primary">Confirm</Button>
+                </DialogActions>
+            </Dialog>
         </ThemeProvider>
     );
 };
