@@ -150,7 +150,11 @@ const SuggestPage = () => {
     const [selectedOccasion, setSelectedOccasion] = useState<Occasion | null>(null);
     const [selectedRelationship, setSelectedRelationship] = useState<Relationship | null>(null);
     const handleSuggestion = () => {
-        setFilteredProducts(products ? recommendProducts(selectedOccasion, selectedRelationship, products) : []);
+        const recommendedProducts = recommendProducts(selectedOccasion, selectedRelationship, products);
+        // Ensure that only Product[] is passed to setFilteredProducts, never null
+        setFilteredProducts(recommendedProducts || []);
+        setShowProducts(true);
+
         setShowProducts(true);
     }
 
