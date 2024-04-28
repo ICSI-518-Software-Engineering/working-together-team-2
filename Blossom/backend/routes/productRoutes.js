@@ -8,10 +8,18 @@ const productRouter = Router();
 
 productRouter.get("/in-stock", async (req, res) => {
   try {
-    // Query for products that are in stock (stockInNumber > 0)
+    // Retrieve vendorId from query parameters
+    const { vendorId } = req.query;
+    
+    if (!vendorId) {
+      return res.status(400).json({ error: "Vendor ID is required" });
+    }
+
+    // Query for products that are in stock and match the vendorId
     const inStockProducts = await ProductModel.find({
       stockInNumber: { $gt: 0 },
       type: "FlowerAndVase",
+      vendorId: vendorId  // Assuming the schema uses vendorId to reference the vendor
     }).sort({ updatedAt: -1 });
 
     return res.json(inStockProducts);
@@ -22,10 +30,18 @@ productRouter.get("/in-stock", async (req, res) => {
 });
 productRouter.get("/in-stock-all", async (req, res) => {
   try {
+    // Retrieve vendorId from query parameters
+    const { vendorId } = req.query;
+    
+    if (!vendorId) {
+      return res.status(400).json({ error: "Vendor ID is required" });
+    }
+
     const inStockProducts = await ProductModel.find({
       $and: [
         { stockInNumber: { $gt: 0 } },
         { $or: [{ type: "Flower" }, { type: "Vase" }] },
+        { vendorId: vendorId }  // Filter by vendorId
       ],
     }).sort({ updatedAt: -1 });
 
@@ -35,6 +51,7 @@ productRouter.get("/in-stock-all", async (req, res) => {
     return res.status(500).send("Something unexpected happened!!");
   }
 });
+
 productRouter.get("/:productId?", async (req, res) => {
   try {
     const { productId } = req.params;
@@ -63,7 +80,9 @@ productRouter.get("/:productId?", async (req, res) => {
 
 productRouter.post("/", async (req, res) => {
   try {
+    
     const product = validateNewProductRequest(req.body);
+    product.vendorId=  req.headers["vendor-id"];
     console.log("vendor id", req.headers["vendor-id"]);
 
     const newProduct = new ProductModel(product);

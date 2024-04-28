@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ProductVisualizationModal from './ProductVisualizationModal';
 import { CatalogItemDataType } from "../(Dashboard)/Catalog/typesAndData";
 import { addToCart } from '../../api/cartServices';
-import { createCustomCatalogService } from '../../api/catalogServices';
+import { createCustomCatalogServiceWithVendor } from '../../api/catalogServices';
 import { getSignedInUserDetails } from '@/utils/authUtils';
 import BuyNowModal from '../Catalog/BuyNowModal'; // Import BuyNowModal
 
@@ -85,6 +85,7 @@ const CustomizePage: React.FC = () => {
         const customProductData: {
             name: string;
             description: string;
+            vendorId: string;
             price: number;
             tags: string[];
             type: ProductType; // Adjusted to use ProductType
@@ -93,6 +94,7 @@ const CustomizePage: React.FC = () => {
         } = {
             name: "Customized Product",
             description: generateSelectedProductsText(),
+            vendorId: selectedVendor.id,
             price: calculateOrderTotal(),
             tags: flowerSelections.map(selection => selection.flower?.name).filter((name): name is string => !!name),
             type: "Custom", // Ensure this is one of the accepted values
@@ -102,7 +104,7 @@ const CustomizePage: React.FC = () => {
 
 
         try {
-            const createdProduct = await createCustomCatalogService(customProductData);
+            const createdProduct = await createCustomCatalogServiceWithVendor(customProductData, selectedVendor.id);
             const productId = createdProduct._id ? createdProduct._id : '';
             const user = getSignedInUserDetails();
             const userId = user?._id ? user._id : '';
@@ -152,7 +154,8 @@ const CustomizePage: React.FC = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = () => {
-        fetch(`http://localhost:8086/api/products/in-stock-all`)
+        const vendorId = selectedVendor?.id ? selectedVendor.id:'';
+        fetch(`http://localhost:8086/api/products/in-stock-all?vendorId=${encodeURIComponent(vendorId)}`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
@@ -271,6 +274,7 @@ const CustomizePage: React.FC = () => {
 
             name: customProductName,
             description,
+            vendorId: selectedVendor.id,
             price: totalPrice,
             tags,
             type: "Custom",
@@ -279,7 +283,7 @@ const CustomizePage: React.FC = () => {
         };
 
         try {
-            const createdProduct = await createCustomCatalogService(customProductData);
+            const createdProduct = await createCustomCatalogServiceWithVendor(customProductData,selectedVendor.id);
             const productId = createdProduct._id ? createdProduct._id : '';
             const user = getSignedInUserDetails();
             const userId = user?._id ? user._id : '';

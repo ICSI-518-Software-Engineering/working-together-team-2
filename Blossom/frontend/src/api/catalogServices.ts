@@ -61,6 +61,19 @@ export const createCustomCatalogService = async (data: CatalogItemDataType) => {
   const res = await http.post<CatalogItemDataType>(`/products`, data);
   return res.data;
 };
+export const createCustomCatalogServiceWithVendor = async (data: CatalogItemDataType, vendorId: string) => {
+  // Set headers for the HTTP request
+  const config = {
+    headers: {
+      'vendor-id': vendorId  // Add the vendorId to the request headers
+    }
+  };
+
+  // Make the HTTP POST request with data and headers
+  const res = await http.post<CatalogItemDataType>('/products', data, config);
+  return res.data;
+};
+
 
 export const useCreateCatalogService = () => {
   return useMutation({

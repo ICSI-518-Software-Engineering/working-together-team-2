@@ -182,8 +182,8 @@ const SuggestPage = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = (vendorId: string) => {
-        vendorId;
-        fetch(`http://localhost:8086/api/products/in-stock`)
+        
+        fetch(`http://localhost:8086/api/products/in-stock?vendorId=${encodeURIComponent(vendorId)}`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({

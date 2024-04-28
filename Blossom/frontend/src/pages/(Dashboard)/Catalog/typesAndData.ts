@@ -5,6 +5,7 @@ export const catalogFormDataZodSchema = z
   .object({
     _id: z.string().optional(),
     name: z.string(),
+    vendorId: z.string(),
     image: z.string().optional(),
     description: z.string().optional(),
     price: z
@@ -45,6 +46,7 @@ export const catalogProductTypeOptions: LabelValueType[] = [
 
 export const defaultCatalogFormData: CatalogItemDataType = {
   description: "",
+  vendorId: "",
   image: "",
   name: "",
   price: 0,
