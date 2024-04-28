@@ -40,6 +40,7 @@ interface Product {
   type: 'Flower' | 'Vase' | 'Custom' | 'FlowerAndVase';
   tags: string[];
   image: string;
+  vendorId: string;
   description: string;
 }
 
