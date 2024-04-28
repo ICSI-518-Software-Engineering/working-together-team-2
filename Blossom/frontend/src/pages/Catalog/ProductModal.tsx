@@ -62,7 +62,7 @@ function handleError(error: unknown): string {
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, onClose }) => {
     const user = getSignedInUserDetails(); // Using Context to get user details
-    const userId = user?._id? user._id : '';
+    const userId = user?._id ? user._id : '';
     const [buyNowOpen, setBuyNowOpen] = useState(false); // State to manage BuyNowModal
 
     const handleAddToCart = async () => {
@@ -98,10 +98,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, on
         <ThemeProvider theme={modalTheme}>
             <Modal open={isOpen} onClose={onClose}>
                 <Box style={{
-                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                    position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                     backgroundColor: 'white', padding: '20px', borderRadius: '8px', outline: 'none',
-                    width: '400px', // Increased width of the modal
-                    textAlign: 'center', // Center aligning text
+                    width: '350px', height: 'auto', overflow: 'hidden', // Ensuring the modal size is controlled
+                    textAlign: 'center',
                 }}>
                     <IconButton
                         onClick={onClose}
@@ -133,15 +133,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, on
                         Add to Cart
                     </Button>
                     <Button
-                    startIcon={<MonetizationOnIcon />}
-                    variant="contained"
-                    color="secondary"
-                    fullWidth
-                    onClick={handleBuyNowClick}
-                    style={{ marginTop: '10px' }}
-                >
-                    Buy Now
-                </Button>
+                        startIcon={<MonetizationOnIcon />}
+                        variant="contained"
+                        color="secondary"
+                        fullWidth
+                        onClick={handleBuyNowClick}
+                        style={{ marginTop: '10px' }}
+                    >
+                        Buy Now
+                    </Button>
                 </Box>
             </Modal>
             <BuyNowModal
@@ -149,7 +149,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, vendor, isOpen, on
                 onClose={handleBuyNowClose}
                 productId={product.id}
                 vendorId={vendor.id}
-                userId= {userId} // Pass the user ID
+                userId={userId} // Pass the user ID
             />
         </ThemeProvider>
     );
