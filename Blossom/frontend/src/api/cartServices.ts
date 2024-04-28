@@ -1,6 +1,6 @@
 // src/api/cartService.ts
 import axios from 'axios';
-const API_URL = 'http://localhost:8086/api/cart';
+const API_URL = 'http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/cart';
 
 // Interface for adding to cart
 interface AddToCartParams {
@@ -19,7 +19,7 @@ interface CustomerDetails {
 
 export const createOrders = async (userId: string, details: CustomerDetails) => {
   try {
-    const response = await axios.post('http://localhost:8086/api/cart/create-orders', { userId, details });
+    const response = await axios.post('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/cart/create-orders', { userId, details });
     return response.data;
   } catch (error) {
     console.error("Failed to create orders:", error);
@@ -30,7 +30,7 @@ export const createOrders = async (userId: string, details: CustomerDetails) => 
 // Function to add product to cart
 export const addToCart = async (params: AddToCartParams): Promise<void> => {
   try {
-    const response = await axios.post('http://localhost:8086/api/cart/update-cart', params);
+    const response = await axios.post('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/cart/update-cart', params);
     console.log('Product added to cart:', response.data);
   } catch (error) {
     console.error('Error adding product to cart:', error);
@@ -41,7 +41,7 @@ export const addToCart = async (params: AddToCartParams): Promise<void> => {
 // Function to immediately buy the product
 export const buyNow = async (userId: string, productId: string, vendorId: string, details: CustomerDetails) => {
   try {
-    const response = await axios.post('http://localhost:8086/api/order/buy-now', {
+    const response = await axios.post('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/order/buy-now', {
       userId,
       productId,
       vendorId,

@@ -64,7 +64,7 @@ const PlanPage = () => {
         console.log('Form Data:', formData);
 
         try {
-            const response = await fetch('http://localhost:8086/api/email/', {
+            const response = await fetch('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/email/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,16 +75,16 @@ const PlanPage = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log(data);
-              
+
             // Show a success message
             alert('Form submitted successfully!');
-            
+
             // Reload the site
             window.location.reload();
-            
+
         } catch (error) {
             console.error('There was an error!', error);
         }

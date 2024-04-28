@@ -11,7 +11,7 @@ export const queryClient = new QueryClient();
 const user = getSignedInUserDetails();
 
 export const http = axios.create({
-  baseURL: "http://localhost:8086/api",
+  baseURL: "http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api",
   headers: {
     "vendor-id": user?.isVendor ? user?._id : undefined,
     "user-id": !user?.isVendor ? user?._id : undefined,

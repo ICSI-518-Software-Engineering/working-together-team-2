@@ -132,7 +132,7 @@ const CustomizePage: React.FC = () => {
 
     useEffect(() => {
         // Fetch vendors from API
-        fetch('http://localhost:8086/api/auth/vendors')
+        fetch('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/auth/vendors')
             .then(response => response.json())
             .then((responseData: any[]) => {
                 // Map the response data to Vendor objects
@@ -154,8 +154,8 @@ const CustomizePage: React.FC = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = () => {
-        const vendorId = selectedVendor?.id ? selectedVendor.id:'';
-        fetch(`http://localhost:8086/api/products/in-stock-all?vendorId=${encodeURIComponent(vendorId)}`)
+        const vendorId = selectedVendor?.id ? selectedVendor.id : '';
+        fetch(`http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/products/in-stock-all?vendorId=${encodeURIComponent(vendorId)}`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({
@@ -283,7 +283,7 @@ const CustomizePage: React.FC = () => {
         };
 
         try {
-            const createdProduct = await createCustomCatalogServiceWithVendor(customProductData,selectedVendor.id);
+            const createdProduct = await createCustomCatalogServiceWithVendor(customProductData, selectedVendor.id);
             const productId = createdProduct._id ? createdProduct._id : '';
             const user = getSignedInUserDetails();
             const userId = user?._id ? user._id : '';

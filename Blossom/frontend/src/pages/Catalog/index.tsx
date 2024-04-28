@@ -116,7 +116,7 @@ const CatalogPage = () => {
     };
     useEffect(() => {
         // Fetch vendors from API
-        fetch('http://localhost:8086/api/auth/vendors')
+        fetch('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/auth/vendors')
             .then(response => response.json())
             .then((responseData: any[]) => {
                 // Map the response data to Vendor objects
@@ -138,7 +138,7 @@ const CatalogPage = () => {
     }, [selectedVendor]);
 
     const fetchProductsByVendor = (vendorId: string) => {
-        fetch(`http://localhost:8086/api/products/in-stock?vendorId=${encodeURIComponent(vendorId)}`)
+        fetch(`http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/products/in-stock?vendorId=${encodeURIComponent(vendorId)}`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({

@@ -1,4 +1,4 @@
-import React, { useMemo , useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   AppBar,
   Box,
@@ -94,7 +94,7 @@ const DashboardOrdersHistoryPage: React.FC = () => {
       setIsLoading(true);
       try {
         // Note the usage of backticks here for the template literal
-        const response = await fetch(`http://localhost:8086/api/order/user/${userId}`);
+        const response = await fetch(`http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/order/user/${userId}`);
         const data: Order[] = await response.json();
         setOrders(data);
       } catch (error) {
