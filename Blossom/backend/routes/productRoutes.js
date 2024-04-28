@@ -11,7 +11,7 @@ productRouter.get("/in-stock", async (req, res) => {
     // Query for products that are in stock (stockInNumber > 0)
     const inStockProducts = await ProductModel.find({
       stockInNumber: { $gt: 0 },
-      type: "FlowerAndVase"
+      type: "FlowerAndVase",
     }).sort({ updatedAt: -1 });
 
     return res.json(inStockProducts);
@@ -25,8 +25,8 @@ productRouter.get("/in-stock-all", async (req, res) => {
     const inStockProducts = await ProductModel.find({
       $and: [
         { stockInNumber: { $gt: 0 } },
-        { $or: [{ type: "Flower" }, { type: "Vase" }] }
-      ]
+        { $or: [{ type: "Flower" }, { type: "Vase" }] },
+      ],
     }).sort({ updatedAt: -1 });
 
     return res.json(inStockProducts);
@@ -38,10 +38,13 @@ productRouter.get("/in-stock-all", async (req, res) => {
 productRouter.get("/:productId?", async (req, res) => {
   try {
     const { productId } = req.params;
+    const vendorId = req.headers["vendor-id"];
 
     // If no product id
     if (!productId) {
-      const products = await ProductModel.find({}).sort({ updatedAt: -1 });
+      const products = await ProductModel.find({ vendorId }).sort({
+        updatedAt: -1,
+      });
       return res.json(products);
     }
 
@@ -61,6 +64,7 @@ productRouter.get("/:productId?", async (req, res) => {
 productRouter.post("/", async (req, res) => {
   try {
     const product = validateNewProductRequest(req.body);
+    console.log("vendor id", req.headers["vendor-id"]);
 
     const newProduct = new ProductModel(product);
     const prod = await newProduct.save();
@@ -89,8 +93,5 @@ productRouter.delete("/:productId", async (req, res) => {
     sendErrorResponse(error, res);
   }
 });
-
-
-
 
 export default productRouter;
