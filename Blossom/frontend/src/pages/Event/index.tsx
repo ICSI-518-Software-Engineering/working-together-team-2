@@ -64,7 +64,7 @@ const PlanPage = () => {
         console.log('Form Data:', formData);
 
         try {
-            const response = await fetch('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/email/', {
+            const response = await fetch('http://ec2-18-116-231-38.us-east-2.compute.amazonaws.com:8086/api/email/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

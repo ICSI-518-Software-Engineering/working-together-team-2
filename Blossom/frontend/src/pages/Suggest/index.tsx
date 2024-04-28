@@ -160,7 +160,7 @@ const SuggestPage = () => {
 
     useEffect(() => {
         // Fetch vendors from API
-        fetch('http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/auth/vendors')
+        fetch('http://ec2-18-116-231-38.us-east-2.compute.amazonaws.com:8086/api/auth/vendors')
             .then(response => response.json())
             .then((responseData: any[]) => {
                 // Map the response data to Vendor objects
@@ -183,7 +183,7 @@ const SuggestPage = () => {
 
     const fetchProductsByVendor = (vendorId: string) => {
 
-        fetch(`http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/products/in-stock?vendorId=${encodeURIComponent(vendorId)}`)
+        fetch(`http://ec2-18-116-231-38.us-east-2.compute.amazonaws.com:8086/api/products/in-stock?vendorId=${encodeURIComponent(vendorId)}`)
             .then(response => response.json())
             .then((responseData: any[]) => {
                 const mappedProducts: Product[] = responseData.map(data => ({

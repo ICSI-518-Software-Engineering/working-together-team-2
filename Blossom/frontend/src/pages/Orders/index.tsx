@@ -94,7 +94,7 @@ const DashboardOrdersHistoryPage: React.FC = () => {
       setIsLoading(true);
       try {
         // Note the usage of backticks here for the template literal
-        const response = await fetch(`http://ec2-54-221-49-2.compute-1.amazonaws.com:8086/api/order/user/${userId}`);
+        const response = await fetch(`http://ec2-18-116-231-38.us-east-2.compute.amazonaws.com:8086/api/order/user/${userId}`);
         const data: Order[] = await response.json();
         setOrders(data);
       } catch (error) {
