@@ -1,4 +1,6 @@
 import { getSignedInUserDetails } from "@/utils/authUtils";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   AppBar,
   Button,
@@ -10,8 +12,6 @@ import {
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import UserMenu from "./UserMenu";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 type NavLinkItem = {
   url: string;
   label: string;
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
         <Typography
           letterSpacing={3}
           variant="h5"
-          fontWeight="medium"
+          fontWeight="600"
           component={Link}
           to="/"
           sx={(props) => ({
@@ -98,7 +98,6 @@ const NavLinks: React.FC = () => {
         label: "Orders",
         icon: <ListAltIcon />, // Icon for the orders
       },
-
     ];
   }
 
@@ -120,7 +119,6 @@ const NavLinks: React.FC = () => {
           </Button>
         ))}
       </ButtonGroup>
-
 
       {/* User Menu */}
       {user && <UserMenu user={user} />}

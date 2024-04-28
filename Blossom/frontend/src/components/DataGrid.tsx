@@ -27,6 +27,12 @@ const DataGrid = <T extends MRT_RowData>({
     enableStickyHeader: true,
     enableColumnActions: false,
     enableDensityToggle: false,
+    muiTableBodyCellProps: {
+      sx: {
+        fontSize: "1rem",
+      },
+    },
+
     renderTopToolbarCustomActions: () => {
       return (
         <Stack direction="row" gap="0.5rem" alignItems="center">

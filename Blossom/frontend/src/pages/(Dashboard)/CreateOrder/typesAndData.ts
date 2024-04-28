@@ -1,6 +1,7 @@
 import { GetCatalogServiceRecordType } from "@/api/catalogServices";
 import { LabelValueType } from "@/lib/constants";
 import { Dayjs } from "dayjs";
+import { distance } from "fastest-levenshtein";
 import { z } from "zod";
 import { removeCommonWords } from "./removeCommonWords";
 
@@ -94,15 +95,15 @@ export const collaborativeFilter = (
           innerFlag ||
           searchTokens.some((token) => {
             let tokenFlag = false;
-            // tokenFlag =
-            //   tokenFlag ||
-            //   distance(token, tag) <= Math.min(token.length, tag.length) / 1.1;
+            const levDistance =
+              distance(token, tag) <= Math.min(token.length, tag.length) / 1.1;
 
             tokenFlag =
               tokenFlag ||
               token.toLowerCase().includes(tag.toLowerCase()) ||
               tag.toLowerCase().includes(token.toLowerCase());
 
+            console.log(levDistance);
             return tokenFlag;
           });
 

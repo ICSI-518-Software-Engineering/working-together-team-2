@@ -105,7 +105,7 @@ const DashboardCatalogPage: React.FC = () => {
                 key={item._id + tag}
                 size="small"
                 label={tag}
-                sx={{ width: "8rem" }}
+                sx={{ width: "8rem", fontSize: "1rem" }}
               />
             ))}
           </Stack>

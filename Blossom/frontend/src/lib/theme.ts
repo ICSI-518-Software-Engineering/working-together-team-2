@@ -13,6 +13,13 @@ export const theme = createTheme({
     // text: {
     //   primary: "#fff",
     // },
+    background: {
+      paper: "#d9dadc",
+      default: "#d9dadc",
+    },
+  },
+  typography: {
+    fontWeightRegular: 500,
   },
   mixins: {
     toolbar: {

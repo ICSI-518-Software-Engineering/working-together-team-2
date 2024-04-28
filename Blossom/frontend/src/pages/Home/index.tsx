@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography, TypographyProps } from "@mui/material";
+import { Box, Paper, Stack, Typography, TypographyProps } from "@mui/material";
 import React from "react";
 
 const HomePage: React.FC = () => {
@@ -14,18 +14,26 @@ const HomePage: React.FC = () => {
         justifyContent="center"
         height="80vh"
       >
-        <TitleTypography>Unleash Your Floral Fantasies</TitleTypography>
-        <Typography fontSize="1.5rem" fontWeight={400}>
-          Have no idea what flowers to give your loved ones? Explore our blossom
-          store
-        </Typography>
+        <Box
+          component={Paper}
+          elevation={5}
+          bgcolor="transparent"
+          borderRadius="1rem"
+          padding="5rem"
+        >
+          <TitleTypography>Unleash Your Floral Fantasies</TitleTypography>
+          <Typography fontSize="2rem" fontWeight={400}>
+            Have no idea what flowers to give your loved ones? Explore our
+            blossom store
+          </Typography>
+        </Box>
         <Stack direction="row" gap="1rem">
-          <Button variant="contained" color="secondary">
+          {/* <Button variant="contained" color="secondary">
             Explore our store
-          </Button>
-          <Button color="inherit" variant="outlined">
+          </Button> */}
+          {/* <Button color="inherit" variant="outlined">
             About Us &rarr;
-          </Button>
+          </Button> */}
         </Stack>
       </Box>
     </Box>
@@ -42,7 +50,7 @@ export const TitleTypography: React.FC<TypographyProps> = (props) => {
   return (
     <Typography
       variant="h3"
-      fontSize="5rem"
+      fontSize="7rem"
       fontWeight={600}
       sx={({ palette }) => ({
         // WebkitTextFillColor: palette.background.default,

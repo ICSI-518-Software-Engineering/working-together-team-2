@@ -37,6 +37,10 @@ export const ProductMongooseSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    vendorId: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
