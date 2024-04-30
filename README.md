@@ -1,3 +1,11 @@
+#BLOSSOM Project 
+
+#URL
+http://ec2-18-116-231-38.us-east-2.compute.amazonaws.com:8086/
+
+
+
+
 # calculator-template
 
 The objective of this task is to experience and resolve merge conflicts that arise while collaborating on a single file. You will understand key concepts such as working on distinct branches, committing and pushing your changes to the working branch, and creating pull requests for merging your implementations into the main branch. 
